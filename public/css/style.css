@@ -1,0 +1,70 @@
+
+ body { background: #f8f9fa; }
+
+    /* Limit overall width */
+    .container-custom {
+      max-width: 360px;
+      margin: 2rem auto 1rem;
+    }
+
+    /* Bold dark-purple header */
+    .navbar-brand {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #341539 !important; /* Dark purple color */ 
+    }
+
+    /* Form card fully dark-purple */
+    .login-card {
+      background: #341539;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      color: #fff;
+      box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.1);
+    }
+    .login-card .form-label {
+      color: #e0d7e8; /* light purple for readability */
+    }
+    .login-card .form-control {
+      border-radius: 0.25rem;
+      background: #4a2f57;
+      border: 1px solid #4a2f57;
+      color: #fff;
+    }
+    .login-card .form-control::placeholder {
+      color: #c0abc1;
+    }
+    .btn-login {
+      background: #502b72;
+      color: #fff;
+      border: none;
+      border-radius: 0.25rem;
+      font-weight: 600;
+    }
+    .btn-login:hover {
+      background: #341539;
+    }
+    
+
+    /* ------Style for Customer Information Form-------*/
+
+
+    .custom-form {
+      background-color: #4A148C; /* deep purple */
+      color: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+    }
+    .custom-form .form-control,
+    .custom-form .form-select {
+      background-color: #6A1B9A;
+      color: white;
+      border: 1px solid #7B1FA2;
+    }
+    .custom-form .form-control:focus,
+    .custom-form .form-select:focus {
+      background-color: #7B1FA2;
+      color: white;
+      box-shadow: none;
+    }
