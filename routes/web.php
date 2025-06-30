@@ -40,5 +40,7 @@ Route::get('/dashboard', function() {
     if ($username === 'receptionist12plk') {
     return view('customerForm');
 }
-return view('dashboard');
+return view('loanOfficerDashboard');
 })->name('dashboard');
+
+Route::post('/to_customertbl', [MyTableController::class, 'save'])->name('to_customertbl');

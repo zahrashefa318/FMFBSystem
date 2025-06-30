@@ -50,15 +50,22 @@
     /* ------Style for Customer Information Form-------*/
 
 
+   #receptionPage {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #341539 !important; /* Dark purple color */ 
+      
+    }
+
     .custom-form {
-      background-color: #4A148C; /* deep purple */
+      background: #341539;
       color: white;
       padding: 2rem;
       border-radius: 0.5rem;
     }
     .custom-form .form-control,
     .custom-form .form-select {
-      background-color: #6A1B9A;
+      background: #4a2f57;
       color: white;
       border: 1px solid #7B1FA2;
     }
@@ -68,3 +75,125 @@
       color: white;
       box-shadow: none;
     }
+#recepBtn{
+  background: #502b72;
+ 
+}
+#recepBtn:hover {
+      background: #341539;
+    }
+
+    /* ----------- Loan Officer Dashboard--------*/
+
+    
+    body {
+      background-color: #fff;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #fff;
+    }
+    .header-container {
+      background-color: #fff;
+      padding: 2rem 0 1rem;
+      text-align: center;
+    }
+    .header-container h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #341539 !important; /* Dark purple color */ 
+      
+    }
+    .dashboard-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: 1rem;
+    }
+    .dashboard-container {
+      display: flex;
+      width: 100%;
+      max-width: 800px;
+      height: 80vh;
+      border-radius: 0.5rem;
+      background-color: #341539;
+      overflow: hidden;
+    }
+    .sidebar {
+      flex: 1;
+      border-right: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .sidebar-title {
+      text-align: center;
+      font-weight: bold;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .nav-links {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-link {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .nav-link:last-child {
+      border-bottom: none;
+    }
+    .search-ssn {
+      padding: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .search-ssn input {
+      width: calc(100% - 80px);
+      display: inline-block;
+    }
+    .search-ssn button {
+      display: inline-block;
+      width: 60px;
+      margin-left: 5px;
+    }
+    .logout-link {
+      padding: 1rem;
+      text-align: center;
+      margin-top: auto;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    .logout-link a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .main {
+      flex: 2.5;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .main-title {
+      text-align: center;
+      font-weight: bold;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .placeholder {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: rgba(255,255,255,0.7);
+      font-size: 1.2rem;
+    }
+  
