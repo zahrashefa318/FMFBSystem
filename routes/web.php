@@ -44,3 +44,6 @@ return view('loanOfficerDashboard');
 })->name('dashboard');
 
 Route::post('/to_customertbl', [MyTableController::class, 'save'])->name('to_customertbl');
+Route::post('/search_ssn', [MyTableController::class, 'search_ssn'])->name('search_ssn');
+
+?>

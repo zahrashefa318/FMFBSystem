@@ -50,38 +50,98 @@
     /* ------Style for Customer Information Form-------*/
 
 
-   #receptionPage {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: #341539 !important; /* Dark purple color */ 
-      
+    
+    :root {
+      --purple-dark: #563d7c;
+      --purple-light: #6f5499;
+      --wrapper-bg: #341539;
     }
-
-    .custom-form {
-      background: #341539;
-      color: white;
-      padding: 2rem;
+    body {
+      background: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .dashboard-header {
+      background: #fff;
+      color: var(--purple-dark);
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.5rem;
+      padding: 1rem;
+    }
+    .wrapper {
+      background: var(--wrapper-bg) !important;
+      max-width: 800px;
+      height: auto;
+      margin: 1rem auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       border-radius: 0.5rem;
     }
-    .custom-form .form-control,
-    .custom-form .form-select {
-      background: #4a2f57;
-      color: white;
-      border: 1px solid #7B1FA2;
+    .dashboard {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
     }
-    .custom-form .form-control:focus,
-    .custom-form .form-select:focus {
-      background-color: #7B1FA2;
-      color: white;
-      box-shadow: none;
+    .sidebar {
+      flex: 1;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
     }
-#recepBtn{
-  background: #502b72;
- 
-}
-#recepBtn:hover {
-      background: #341539;
+    .sidebar h4 {
+      color: #fff;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
     }
+    .content {
+      flex: 2.5;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .form-fixed {
+      position: sticky;
+      top: 0;
+    }
+    .btn-custom {
+      background-color: var(--purple-dark);
+      color: #fff;
+      border: none;
+    }
+    .btn-custom:hover {
+      background-color: var(--purple-light);
+    }
+    .logout-link {
+      margin-top: auto;
+      text-decoration: none;
+      color: #ffc;
+    }
+    .logout-link:hover {
+      text-decoration: underline;
+    }
+    label {
+      color: #fff;
+    }
+    .form-control,
+    .form-select,
+    textarea {
+      background: var(--purple-dark);
+      color: #fff;
+      border: 1px solid #fff;
+    }
+
+    /* Repeat applicant dropdown styling */
+    #repeat-status {
+      background-color: var(--purple-dark) !important;
+      color: #fff;
+    }
+    #repeat-status option {
+      background-color: var(--purple-dark);
+      color: #fff;
+    }
+  
 
     /* ----------- Loan Officer Dashboard--------*/
 
