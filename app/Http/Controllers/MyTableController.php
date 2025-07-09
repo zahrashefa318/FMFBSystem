@@ -58,8 +58,9 @@ class MyTableController extends Controller
       $customerInfo=DB::table('customer_tbl')->where('social_security_num',$ssn)->select('first_name','last_name','registrationdate','status')->first();
       return redirect()->route('dashboard')->with('customerInfo',$customerInfo);
     }
-    return redirect()->back()->withInput()->with('error', 'No customer found with that SSN.');
-    
+    else{
+    return redirect()->back()->withInput()->with('message', 'No customer found with that SSN.');
+    }
    }
 }
 ?>

@@ -57,16 +57,22 @@
     </button>
 </form>
 
+<div class="mb-3">
+  <textarea 
+    class="form-control" 
+    rows="6" 
+    style="white-space: pre-wrap; padding-left: 0; text-indent: 0;" 
+    readonly 
+    placeholder="Details...">@if(session('customerInfo'))
+    Name: {{ session('customerInfo')->first_name }}
+    Last name: {{ session('customerInfo')->last_name }}
+    RegistrationDate: {{ session('customerInfo')->registrationdate }}
+    Status: {{ session('customerInfo')->status }}
+    @elseif (session('message'))
+    {{ session('message') }}
+    @endif</textarea>
+    </div>
 
-        <div class="mb-3">
-          <textarea class="form-control"  rows="5" style="white-space: pre-wrap;" readonly placeholder="Details...">
-            @if(session('customerInfo'))
-            Name: {{ session('customerInfo')->first_name }} {{ session('customerInfo')->last_name }}
-            RegistrationDate: {{ session('customerInfo')->registrationdate }}
-            Status: {{ session('customerInfo')->status }}
-            @endif
-          </textarea>
-        </div>
 
         <h4>Repeat applicant</h4>
 
