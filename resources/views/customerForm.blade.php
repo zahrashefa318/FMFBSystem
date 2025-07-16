@@ -45,9 +45,7 @@
             id="ssn-search"
             name="ssn"
             class="form-control"
-            maxlength="11"
-            minlength="11"
-            pattern="\d{11}"
+  
             required
         >
     </div>
@@ -109,23 +107,24 @@
               <div class="row mb-3">
                 <div class="col">
                   <label for="firstName" class="form-label text-white">First Name</label>
-                  <input type="text" class="form-control" name="firstName" id="firstName" required>
+                  <input type="text" inputmode="text" pattern="[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}"  title="2–30 letters, spaces, hyphens or apostrophes" class="form-control" name="firstName" id="firstName" required>
                 </div>
                 <div class="col">
                   <label for="lastName" class="form-label text-white">Last Name</label>
-                  <input type="text" class="form-control" name="lastName" id="lastName" required>
+                  <input type="text" inputmode="text" pattern="[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}"  title="2–30 letters, spaces, hyphens or apostrophes" class="form-control" name="lastName" id="lastName" required>
                 </div>
               </div>
 
               <div class="mb-3">
-                <label for="ssn" class="form-label text-white">Social Security Number</label>
-                <input type="text" class="form-control" name="ssn" id="ssn" required>
+                <label for="ssn" class="form-label text-white"  >Social Security Number</label>
+           
+                <input type="text"  inputmode="numeric" class="form-control" name="ssn" id="ssn" required>
               </div>
 
               <div class="row mb-3">
                 <div class="col">
                   <label for="phone" class="form-label text-white">Phone Number</label>
-                  <input type="tel" class="form-control" name="phone" id="phone" required>
+                  <input type="tel"  inputmode="tel"  maxlength="14" placeholder="(123) 456-7890"  class="form-control" name="phone" id="phone" required>
                 </div>
                 <div class="col">
                   <label for="email" class="form-label text-white">Email Address</label>
@@ -162,7 +161,7 @@
                 </div>
                 <div class="col">
                   <label for="businessPhone" class="form-label text-white">Business Phone</label>
-                  <input type="tel" class="form-control" name="businessPhone" id="businessPhone" required>
+                  <input type="tel" inputmode="tel"  maxlength="14" placeholder="(123) 456-7890" class="form-control" name="businessPhone" id="businessPhone" required>
                 </div>
               </div>
 
@@ -181,6 +180,132 @@
       
     </div>
   </div>
+  <script>
+  const input = document.getElementById('ssn');
+  const input2 = document.getElementById('ssn-search');
+  const ssnStrictPattern = /^(?!(000|666|9\d{2}))\d{3}-(?!00)\d{2}-(?!0000)\d{4}$/;
+  const phoneInput = document.getElementById('phone');
+  const phoneInput2 = document.getElementById('businessPhone');
+
+
+  function fixSSN(val) {
+    // strip non-digits and limit to 9
+    let digits = val.replace(/\D/g, '').slice(0, 9);
+    return digits
+      .replace(/(\d{3})(\d{2})(\d{0,4})/, (m, a, b, c) =>
+        `${a}-${b}${c ? '-' + c : ''}`
+      );
+  }
+
+  input.addEventListener('input', e => {
+    const cursorPos = e.target.selectionStart;
+    const oldLength = e.target.value.length;
+    e.target.value = fixSSN(e.target.value);
+    const newLength = e.target.value.length;
+    // maintain caret position roughly
+    e.target.setSelectionRange(cursorPos + (newLength - oldLength), cursorPos + (newLength - oldLength));
+  });
+
+  input.addEventListener('blur', e => {
+    const valid = ssnStrictPattern.test(e.target.value);
+
+    if (!valid && e.target.value !== '') {
+      alert('Invalid SSN format; expected 123-45-6789');
+      e.target.focus();
+    }
+  });
+// Sanitization and validation for ssn-search field :
+
+  input2.addEventListener('input', e => {
+    const cursorPos = e.target.selectionStart;
+    const oldLength = e.target.value.length;
+    e.target.value = fixSSN(e.target.value);
+    const newLength = e.target.value.length;
+    // maintain caret position roughly
+    e.target.setSelectionRange(cursorPos + (newLength - oldLength), cursorPos + (newLength - oldLength));
+  });
+
+  input2.addEventListener('blur', e => {
+     const valid = ssnStrictPattern.test(e.target.value);
+    if (!valid && e.target.value !== '') {
+      alert('Invalid SSN format; expected 123-45-6789');
+      e.target.focus();
+    }
+  });
+
+  //phone inputs sanitization:
+  function fixPhone(val) {
+  const digits = val.replace(/\D/g, '').slice(0, 10);
+  return digits
+    .replace(/(\d{3})(\d{3})(\d{0,4})/, (m, a, b, c) =>
+      `(${a}) ${b}${c ? '-' + c : ''}`
+    );
+}
+
+
+
+phoneInput.addEventListener('input', e => {
+  const pos = e.target.selectionStart;
+  const before = e.target.value.length;
+  e.target.value = fixPhone(e.target.value);
+  const after = e.target.value.length;
+  e.target.setSelectionRange(pos + (after - before), pos + (after - before));
+});
+
+phoneInput.addEventListener('blur', e => {
+  const valid = /^\(\d{3}\) \d{3}-\d{4}$/.test(e.target.value);
+  if (e.target.value !== '' && !valid) {
+    alert('Invalid phone format; expected (123) 456-7890');
+    e.target.focus();
+  }
+});
+
+//Sanitization for business phone input:
+  phoneInput2.addEventListener('input', e => {
+  const pos = e.target.selectionStart;
+  const before = e.target.value.length;
+  e.target.value = fixPhone(e.target.value);
+  const after = e.target.value.length;
+  e.target.setSelectionRange(pos + (after - before), pos + (after - before));
+});
+
+phoneInput2.addEventListener('blur', e => {
+  const valid = /^\(\d{3}\) \d{3}-\d{4}$/.test(e.target.value);
+  if (e.target.value !== '' && !valid) {
+    alert('Invalid phone format; expected (123) 456-7890');
+    e.target.focus();
+  }
+});
+
+//name and last name inputs sanitization:
+document
+  .getElementById('name-form')
+  .addEventListener('submit', function(e) {
+    const first = document.getElementById('first-name');
+    const last = document.getElementById('last-name');
+    const re = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/;
+
+    let valid = true;
+    [first, last].forEach(input => {
+      if (!re.test(input.value.trim())) {
+        valid = false;
+        input.classList.add('invalid');
+        input.setCustomValidity(input.title);
+      } else {
+        input.classList.remove('invalid');
+        input.setCustomValidity('');
+      }
+    });
+
+    if (!valid) {
+      e.preventDefault();
+      alert('Please enter valid first and last names.');
+    }
+  });
+
+
+
+</script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
