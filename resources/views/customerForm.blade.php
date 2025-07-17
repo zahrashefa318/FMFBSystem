@@ -128,7 +128,7 @@
                 </div>
                 <div class="col">
                   <label for="email" class="form-label text-white">Email Address</label>
-                  <input type="email" class="form-control" name="email" id="email" required>
+                  <input type="email" inputmode="email" placeholder="you@example.com" pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" title="Enter a valid email address (e.g., you@example.com)" class="form-control" name="email" id="email" required>
                 </div>
               </div>
 
@@ -146,13 +146,24 @@
 
               <div class="mb-3">
                 <label for="timeInBusiness" class="form-label text-white">Time in Business</label>
-                <input type="text" class="form-control" name="timeInBusiness" id="timeInBusiness" placeholder="e.g. 5 years" required>
+                <input type="text" inputmode="numeric" pattern="[0-9]*"  class="form-control" name="timeInBusiness" id="timeInBusiness" placeholder="Enter number of years." required>
               </div>
 
               <div class="mb-3">
-                <label for="businessAddress" class="form-label text-white">Business Address</label>
-                <input type="text" class="form-control" name="businessAddress" id="businessAddress" required>
-              </div>
+                    <label class="form-label text-white">Business Address</label>
+                    <div class="row gx-2">
+                      <div class="col">
+                        <input type="text" class="form-control" name="addrStreet" id="addrStreet" placeholder="Street" required>
+                      </div>
+                      <div class="col">
+                        <input type="text" class="form-control" name="addrCity" id="addrCity" placeholder="City" required>
+                      </div>
+                      <div class="col">
+                        <input type="text" class="form-control" name="addrState" id="addrState" placeholder="State" required>
+                      </div>
+                    </div>
+                  </div>
+
 
               <div class="row mb-3">
                 <div class="col">
@@ -278,31 +289,103 @@ phoneInput2.addEventListener('blur', e => {
 });
 
 //name and last name inputs sanitization:
-document
-  .getElementById('name-form')
-  .addEventListener('submit', function(e) {
-    const first = document.getElementById('first-name');
-    const last = document.getElementById('last-name');
-    const re = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/;
+const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/;
 
-    let valid = true;
-    [first, last].forEach(input => {
-      if (!re.test(input.value.trim())) {
-        valid = false;
-        input.classList.add('invalid');
-        input.setCustomValidity(input.title);
-      } else {
-        input.classList.remove('invalid');
-        input.setCustomValidity('');
-      }
-    });
+function attachNameValidator(el, nameType) {
+  el.addEventListener('blur', e => {
+    const val = e.target.value.trim();
+    const isValid = NAME_REGEX.test(val);
+    if (val !== '' && !isValid) {
+      alert(`Invalid ${nameType}; please use 2–30 letters, spaces, hyphens, or apostrophes.`);
+      el.focus();
+    }
+  });
+  
+  el.addEventListener('input', e => {
+    // Clears a previously set invalid state as user types
+    if (NAME_REGEX.test(e.target.value.trim())) {
+      e.target.setCustomValidity('');
+    }
+  });
+}
 
-    if (!valid) {
+const nameField = document.getElementById('firstName');
+
+nameField.addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/[0-9]/g, '');
+});
+const nameField2 = document.getElementById('lastName');
+
+nameField2.addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/[0-9]/g, '');
+});
+
+attachNameValidator(document.getElementById('firstName'), 'first name');
+attachNameValidator(document.getElementById('lastName'), 'last name');
+
+//validation for email input:
+  const emailInput = document.getElementById('email');
+const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+emailInput.addEventListener('blur', e => {
+  const val = e.target.value.trim();
+  if (val !== '' && !emailRegex.test(val)) {
+    alert('Please enter a valid email address (e.g., you@example.com).');
+    emailInput.focus();
+  }
+});
+
+
+// validation for time in business input:
+ const timeInBusiness = document.getElementById('timeInBusiness');
+
+  timeInBusiness.addEventListener('keypress', e => {
+    const char = String.fromCharCode(e.which || e.keyCode);
+    // Allow only digits 0–9
+    if (!/[0-9]/.test(char)) {
+      e.preventDefault(); // Block the keystroke
+    }
+  });
+   timeInBusiness.addEventListener('paste', e => {
+    const pasted = (e.clipboardData || window.clipboardData).getData('text');
+    if (!/^\d*$/.test(pasted)) {
       e.preventDefault();
-      alert('Please enter valid first and last names.');
     }
   });
 
+  timeInBusiness.addEventListener('blur', e => {
+    let value = e.target.value.replace(/\D/g, '') || '';
+    if (value !== '') {
+      let num = parseInt(value, 10);
+      if (num < 3) num = 3;
+      if (num > 50) num = 50;
+      e.target.value = num;
+    }
+  });
+
+  //validation for zipcode input:
+    const zipInput = document.getElementById('zipcode');
+const zipRegex = /^\d{5}(?:-\d{4})?$/;
+
+zipInput.addEventListener('input', e => {
+  // Allow only digits and at most one hyphen
+  let v = e.target.value.replace(/[^\d-]/g, '');
+
+  // Auto-insert hyphen after 5 digits if typing
+  if (/^\d{5}$/.test(v) && !v.includes('-')) {
+    v = v + '-';
+  }
+  
+  e.target.value = v.slice(0, 10);
+});
+
+zipInput.addEventListener('blur', e => {
+  const val = e.target.value.trim();
+  if (val && !zipRegex.test(val)) {
+    alert('Invalid ZIP Code—please use 12345 or 12345‑6789');
+    e.target.focus();
+  }
+});
 
 
 </script>
