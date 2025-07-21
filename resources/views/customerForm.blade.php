@@ -364,28 +364,19 @@ emailInput.addEventListener('blur', e => {
   });
 
   //validation for zipcode input:
-    const zipInput = document.getElementById('zipcode');
+const zipInput = document.getElementById('zipcode');
 const zipRegex = /^\d{5}(?:-\d{4})?$/;
 
-zipInput.addEventListener('input', e => {
-  // Allow only digits and at most one hyphen
-  let v = e.target.value.replace(/[^\d-]/g, '');
-
-  // Auto-insert hyphen after 5 digits if typing
-  if (/^\d{5}$/.test(v) && !v.includes('-')) {
-    v = v + '-';
-  }
-  
-  e.target.value = v.slice(0, 10);
-});
-
-zipInput.addEventListener('blur', e => {
-  const val = e.target.value.trim();
-  if (val && !zipRegex.test(val)) {
-    alert('Invalid ZIP Code—please use 12345 or 12345‑6789');
-    e.target.focus();
+// On form submission or input check:
+zipInput.addEventListener('input', () => {
+  const value = zipInput.value; // This is a string
+  if (zipRegex.test(value)) {
+    zipInput.setCustomValidity('');
+  } else {
+    zipInput.setCustomValidity('Enter a valid 5-digit ZIP or ZIP+4 code');
   }
 });
+
 
 
 </script>
