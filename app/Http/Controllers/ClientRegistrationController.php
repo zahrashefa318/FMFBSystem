@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientRegistrationRequest;
 use App\Http\Controllers\MyTableController;
+use App\Models\Address;
+use App\Models\Customer;
 use Illuminate\Support\Facades\DB;
 
 class ClientRegistrationController extends Controller
@@ -19,7 +21,7 @@ class ClientRegistrationController extends Controller
             return redirect()->back()->withInput()->with('error', 'Frequent patron');
         }
 
-    try{
+    //try{
         $hartford    = ['06001','06010','06103','06033'];
         $fairfield   = ['06801','06810','06830','06850'];
         $new_haven   = ['06511','06401','06437'];
@@ -32,7 +34,7 @@ class ClientRegistrationController extends Controller
         $zipcode=$validatedData['zipcode'];
         if ($zipcode >= '06001' && $zipcode <= '06103') {
                 $branch_id = 1;
-            } elseif ($zipcode >= '06801' && $zipcode <= '06850') {
+            } elseif ($zipcode >= '06801' && $zipcode <= '06854') {
                 $branch_id = 2;
             } elseif ($zipcode >= '06401' && $zipcode <= '06511') {
                 $branch_id = 3;
@@ -53,6 +55,8 @@ class ClientRegistrationController extends Controller
             'zipcode'=>$validatedData['zipcode'],
           ]);
 
+        
+
          $customer=Customer::create([
           'first_name'=>$validatedData['firstName'],
           'last_name'=>$validatedData['lastName'],
@@ -65,7 +69,7 @@ class ClientRegistrationController extends Controller
           'registrationdate'=>$validatedData['registrationDate'],
           'status'=>'new',
           'branch_id'=>$branch_id,
-          'address_id'            => $address->id,
+          'address_id'=> $address->address_id,
           ]);
           
           
@@ -74,12 +78,12 @@ class ClientRegistrationController extends Controller
           DB::commit(); // Commit transaction
 
         return redirect()->route('dashboard')->with('success','Data saved!');
-        }
-        catch(\Illuminate\Database\QueryException $e)
-        {
-          \Log::error('Insert failed: ' . $e->getMessage());
-          return redirect()->back()->withInput()->with('error','An error occured during saving data!');
+        //}
+       // catch(\Illuminate\Database\QueryException $e)
+       // {
+        //  \Log::error('Insert failed: ' . $e->getMessage());
+         // return redirect()->back()->withInput()->with('error','An error occured during saving data!');
           
-        } 
+       // } 
 }
 }

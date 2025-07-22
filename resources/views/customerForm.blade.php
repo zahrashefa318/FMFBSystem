@@ -140,7 +140,7 @@
                   <option>Accommodation & Food Services</option>
                   <option>Repair & Maintenance Services</option>
                   <option>Hospitality</option>
-                  <option>Goods‑Producing Sectors</option>
+                  <option>Goods Producing Sectors</option>
                 </select>
               </div>
 
@@ -247,11 +247,14 @@
   //phone inputs sanitization:
   function fixPhone(val) {
   const digits = val.replace(/\D/g, '').slice(0, 10);
-  return digits
-    .replace(/(\d{3})(\d{3})(\d{0,4})/, (m, a, b, c) =>
-      `(${a}) ${b}${c ? '-' + c : ''}`
-    );
+  const match = digits.match(/^(\d{3})(\d{3})(\d{0,4})$/);
+  if (match) {
+    const [_, a, b, c] = match;
+    return `(${a}) ${b}${c ? '-' + c : ''}`;
+  }
+  return digits;
 }
+
 
 
 

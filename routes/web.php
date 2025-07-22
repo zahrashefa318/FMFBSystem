@@ -29,4 +29,7 @@ Route::post('/to_customertbl', [ClientRegistrationController::class, 'store'])->
 Route::post('/search_ssn', [MyTableController::class, 'search_ssn'])->name('search_ssn');
 
 
+
+
+
 ?>
