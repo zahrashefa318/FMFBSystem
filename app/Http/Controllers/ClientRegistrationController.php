@@ -22,31 +22,24 @@ class ClientRegistrationController extends Controller
         }
 
     //try{
-        $hartford    = ['06001','06010','06103','06033'];
-        $fairfield   = ['06801','06810','06830','06850'];
-        $new_haven   = ['06511','06401','06437'];
-        $new_london  = ['06340','06355','06371'];
-        $litchfield  = ['06701','06226','06269'];
-
-        
-        DB::beginTransaction(); // Start transaction
-        $branch_id=0;
         $zipcode=$validatedData['zipcode'];
-        if ($zipcode >= '06001' && $zipcode <= '06103') {
-                $branch_id = 1;
-            } elseif ($zipcode >= '06801' && $zipcode <= '06854') {
-                $branch_id = 2;
-            } elseif ($zipcode >= '06401' && $zipcode <= '06511') {
-                $branch_id = 3;
-            } elseif ($zipcode >= '06340' && $zipcode <= '06371') {
-                $branch_id = 4;
-            } elseif ($zipcode >= '06226' && $zipcode <= '06701') {
-                $branch_id = 5;
-            } else {
-                return redirect()->back()
-                                ->withInput()
-                                ->with('error', 'The zipcode does not belong to Connecticut!');
+        $configStaff=config('filterByzip');
+        $branch_id=null;
+        $loanOfficer=null;
+        foreach($configStaff['branches'] as $id =>[$min,$max]){
+            if($zipcode >= $min && $zipcode <= $max){
+                $branch_id=$id;
+                $user=$configStaff['loanOfficerPerBranch'][$id];
+                $loanOfficer=$user[(int)$zipcode % count($user)];
+                break;
             }
+        }
+         if (!$branch_id) {
+            return back()->withErrors(['zipcode' => 'No branch found for that ZIP code']);
+        }
+
+        DB::beginTransaction(); // Start transaction
+        
          
          $address=Address::create([
             'street'=>$validatedData['addrStreet'],
@@ -69,6 +62,7 @@ class ClientRegistrationController extends Controller
           'registrationdate'=>$validatedData['registrationDate'],
           'status'=>'new',
           'branch_id'=>$branch_id,
+          'staff_username'=>$loanOfficer,
           'address_id'=> $address->address_id,
           ]);
           
