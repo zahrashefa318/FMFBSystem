@@ -7,6 +7,8 @@ use App\Http\Controllers\MyTableController;
 use App\Models\Address;
 use App\Models\Customer;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;  
+
 
 class ClientRegistrationController extends Controller
 { 
@@ -22,15 +24,36 @@ class ClientRegistrationController extends Controller
         }
 
     //try{
-        $zipcode=$validatedData['zipcode'];
-        $configStaff=config('filterByzip');
-        $branch_id=null;
-        $loanOfficer=null;
-        foreach($configStaff['branches'] as $id =>[$min,$max]){
-            if($zipcode >= $min && $zipcode <= $max){
-                $branch_id=$id;
-                $user=$configStaff['loanOfficerPerBranch'][$id];
-                $loanOfficer=$user[(int)$zipcode % count($user)];
+       $zipcode = (int)$validatedData['zipcode'];
+        $configStaff = config('filterByzip');
+        $branch_id = null;
+        $loanOfficer = null;
+
+        foreach ($configStaff['branches'] as $id => list($min, $max)) {
+            $minZip = (int)$min;
+            $maxZip = (int)$max;
+
+            if ($zipcode >= $minZip && $zipcode <= $maxZip) {
+                $branch_id = $id;
+
+                $user = $configStaff['loanOfficerPerBranch'][$id] ?? [];
+                if (is_array($user) && ($count = count($user)) > 0) {
+                    $index = $zipcode % $count;
+                    $loanOfficer = $user[$index] ?? null;
+                } else {
+                    $loanOfficer = null;
+                }
+
+                // 📝 Add debug log BEFORE DB operations
+                \Log::debug('Branch lookup', [
+                    'branch_id'   => $branch_id,
+                    'zipcode'     => $zipcode,
+                    'user_array'  => $user,
+                    'user_count'  => count($user),
+                    'index'       => $index ?? null,
+                    'loanOfficer' => $loanOfficer,
+                ]);
+
                 break;
             }
         }

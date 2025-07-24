@@ -9,7 +9,7 @@ class Customer extends Model
 {
      protected $table = 'customer_tbl';
      protected $primaryKey = 'customer_id'; 
-     protected $fillable = ['first_name', 'last_name','social_security_num','phone','email','type_of_business','time_in_business','business_phone','registrationdate','status','active_loan_account','branch_id','address_id' ];
+     protected $fillable = ['first_name', 'last_name','social_security_num','phone','email','type_of_business','time_in_business','business_phone','registrationdate','status','active_loan_account','staff_username','branch_id','address_id' ];
 
      public function address(){
         return $this->belongsTo(Address::class,'address_id');
