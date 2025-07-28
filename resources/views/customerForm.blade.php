@@ -35,7 +35,7 @@
     <div class="dashboard">
       <!-- Left panel: Repeat Applicant -->
       <div class="sidebar">
-        <form action="search_ssn" method="POST">
+        <form action="{{ route('search_ssn') }}" method="POST">
     @csrf
 
     <div class="mb-3">
@@ -74,26 +74,51 @@
 
         <h4>Repeat applicant</h4>
 
-        <div class="mb-3">
-          <label for="repeat-ssn" class="form-label">SSN</label>
-          <input type="text" id="repeat-ssn" class="form-control" name="repeatSsn">
-        </div>
+        <form action="{{ route('update_customer') }}" method="POST">
+  @csrf
+  <div class="mb-3">
+    <label for="repeat-ssn" class="form-label">SSN</label>
+    <input
+      type="text"
+      id="repeat-ssn"
+      class="form-control"
+      name="repeatSsn"
+    />
+  </div>
 
-        <div class="row g-2 mb-3">
-          <div class="col">
-            <label for="repeat-date" class="form-label text-white">Date</label>
-            <input type="date" id="repeat-date" class="form-control" name="repeatDate">
-          </div>
-          <div class="col">
-            <label for="repeat-status" class="form-label text-white">Status</label>
-            <select id="repeat-status" class="form-select" name="repeatStatus">
-              <option value="" selected>Select status…</option>
-              <option>New</option>
-            </select>
-          </div>
-        </div>
+  <div class="row g-2 mb-3">
+    <div class="col">
+      <label for="repeat-date" class="form-label text-white">
+        Date
+      </label>
+      <input
+        type="date"
+        id="repeat-date"
+        class="form-control"
+        name="repeatDate"
+      />
+    </div>
+    <div class="col">
+      <label for="repeat-status" class="form-label text-white">
+        &nbsp;
+      </label>
+      <select
+        id="repeat-status"
+        class="form-select"
+        name="repeatStatus"
+      >
+        <option value="" selected>Select status…</option>
+        <option value="new">New</option>
+      </select>
+    </div>
+  </div>
 
-        <button class="btn btn-custom w-100 mb-3">Submit</button>
+  <button type="submit" class="btn btn-custom w-100 mb-3">
+    Submit
+  </button>
+</form>
+
+
         <a href="#" class="logout-link">Logout</a>
       </div>
 
@@ -168,7 +193,7 @@
               <div class="row mb-3">
                 <div class="col">
                   <label for="zipcode" class="form-label text-white">Zip Code</label>
-                  <input type="text" class="form-control" name="zipcode" id="zipcode" required>
+                  <input type="text" class="form-control" inputmode="numeric" name="zipcode" id="zipcode" maxlength="5" pattern="[0-9]{5}" required>
                 </div>
                 <div class="col">
                   <label for="businessPhone" class="form-label text-white">Business Phone</label>
@@ -194,6 +219,7 @@
   <script>
   const input = document.getElementById('ssn');
   const input2 = document.getElementById('ssn-search');
+  const input3 = document.getElementById('repeat-ssn');
   const ssnStrictPattern = /^(?!(000|666|9\d{2}))\d{3}-(?!00)\d{2}-(?!0000)\d{4}$/;
   const phoneInput = document.getElementById('phone');
   const phoneInput2 = document.getElementById('businessPhone');
@@ -237,6 +263,24 @@
   });
 
   input2.addEventListener('blur', e => {
+     const valid = ssnStrictPattern.test(e.target.value);
+    if (!valid && e.target.value !== '') {
+      alert('Invalid SSN format; expected 123-45-6789');
+      e.target.focus();
+    }
+  });
+
+  //Sanitization and validation for repeat-ssn field:
+    input3.addEventListener('input', e => {
+    const cursorPos = e.target.selectionStart;
+    const oldLength = e.target.value.length;
+    e.target.value = fixSSN(e.target.value);
+    const newLength = e.target.value.length;
+    // maintain caret position roughly
+    e.target.setSelectionRange(cursorPos + (newLength - oldLength), cursorPos + (newLength - oldLength));
+  });
+
+  input3.addEventListener('blur', e => {
      const valid = ssnStrictPattern.test(e.target.value);
     if (!valid && e.target.value !== '') {
       alert('Invalid SSN format; expected 123-45-6789');
@@ -368,16 +412,22 @@ emailInput.addEventListener('blur', e => {
 
   //validation for zipcode input:
 const zipInput = document.getElementById('zipcode');
-const zipRegex = /^\d{5}(?:-\d{4})?$/;
+const zipRegex = /^\d{5}$/;
 
-// On form submission or input check:
-zipInput.addEventListener('input', () => {
-  const value = zipInput.value; // This is a string
+zipInput.addEventListener('keypress', e => {
+  if (!/^[0-9]$/.test(e.key)) {
+    e.preventDefault();
+  }
+});
+
+zipInput.addEventListener('blur', () => {
+  const value = zipInput.value;
   if (zipRegex.test(value)) {
     zipInput.setCustomValidity('');
   } else {
-    zipInput.setCustomValidity('Enter a valid 5-digit ZIP or ZIP+4 code');
+    zipInput.setCustomValidity('Please enter exactly 5 digits (leading zeros allowed)');
   }
+  zipInput.reportValidity();
 });
 
 

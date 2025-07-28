@@ -141,6 +141,13 @@
       background-color: var(--purple-dark);
       color: #fff;
     }
+    #repeat-status.form-select {
+      width: auto !important;
+      max-width: 100%;
+      line-height: 1.4;
+      padding: 0.4rem;
+    }
+
   
 
     /* ----------- Loan Officer Dashboard--------*/

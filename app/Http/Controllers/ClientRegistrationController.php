@@ -1,106 +1,91 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientRegistrationRequest;
+use App\Services\CustomerService;
 use App\Http\Controllers\MyTableController;
-use App\Models\Address;
+use Illuminate\Http\Request;
+use DomainException;
 use App\Models\Customer;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;  
-
 
 class ClientRegistrationController extends Controller
-{ 
-    public function store(ClientRegistrationRequest $request){
-        $validatedData=$request->validated();
-        $tableController=new MyTableController;
+{
+    protected CustomerService $customerService;
+    protected MyTableController $tableController;
 
-        $ssn=$validatedData['ssn'];
-        $existed=$tableController->search_ssn($ssn);
+    public function __construct(CustomerService $customerService, MyTableController $tableController)
+    {
+        $this->customerService = $customerService;
+        $this->tableController = $tableController;
+    }
 
-        if ($existed) {
-            return redirect()->back()->withInput()->with('error', 'Frequent patron');
+    public function store(ClientRegistrationRequest $request)
+    {
+        $data = $request->validated();
+        if ($this->tableController->search_ssn($data['ssn'])) {
+            return back()->withInput()->with('error', 'Frequent patron');
         }
 
-    //try{
-       $zipcode = (int)$validatedData['zipcode'];
-        $configStaff = config('filterByzip');
-        $branch_id = null;
-        $loanOfficer = null;
-
-        foreach ($configStaff['branches'] as $id => list($min, $max)) {
-            $minZip = (int)$min;
-            $maxZip = (int)$max;
-
-            if ($zipcode >= $minZip && $zipcode <= $maxZip) {
-                $branch_id = $id;
-
-                $user = $configStaff['loanOfficerPerBranch'][$id] ?? [];
-                if (is_array($user) && ($count = count($user)) > 0) {
-                    $index = $zipcode % $count;
-                    $loanOfficer = $user[$index] ?? null;
-                } else {
-                    $loanOfficer = null;
-                }
-
-                // 📝 Add debug log BEFORE DB operations
-                \Log::debug('Branch lookup', [
-                    'branch_id'   => $branch_id,
-                    'zipcode'     => $zipcode,
-                    'user_array'  => $user,
-                    'user_count'  => count($user),
-                    'index'       => $index ?? null,
-                    'loanOfficer' => $loanOfficer,
-                ]);
-
-                break;
-            }
+        try {
+            $this->customerService->registerCustomer($data);
+            return redirect()->route('dashboard')->with('success', 'Data saved!');
+        } catch (DomainException $e) {
+            return back()->withErrors(['zipcode' => $e->getMessage()]);
+        } catch (\Throwable $e) {
+            Log::error('Registration error: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'An error occurred saving data');
         }
-         if (!$branch_id) {
-            return back()->withErrors(['zipcode' => 'No branch found for that ZIP code']);
+    }
+
+    public function search_customer(Request $req)
+    {
+        $ssn = $req->input('ssn');
+        if ($this->tableController->search_ssn($ssn)) {
+            $customers = $this->customerService->searchBySsn($ssn);
+            return back()->with('customerInfo', $customers);
+        }
+        return back()->with('message', 'No such customer found in database.');
+    }
+
+  public function updateCustomerStatus(Request $req)
+    {
+        $data = $req->validate([
+            'repeatSsn'    => ['required', 'regex:/^\d{3}-\d{2}-\d{4}$/', 'exists:customer_tbl,social_security_num'],
+            'repeatStatus' => ['required', 'string', 'in:new,paid_off'],
+            'repeatDate'   => ['required', 'date', 'before_or_equal:today'],
+        ], [
+            'repeatSsn.required'          => 'SSN is required.',
+            'repeatSsn.regex'             => 'SSN must be in the format XXX‑XX‑XXXX.',
+            'repeatSsn.exists'            => 'That SSN does not exist.',
+            'repeatStatus.required'       => 'Status is required.',
+            'repeatStatus.in'             => 'Status must be either "new" or "paid_off".',
+            'repeatDate.required'         => 'Payment date is required.',
+            'repeatDate.date'             => 'Please enter a valid date.',
+            'repeatDate.before_or_equal'  => 'Date cannot be in the future.',
+        ], [
+            'repeatSsn'    => 'SSN',
+            'repeatStatus' => 'status',
+            'repeatDate'   => 'payment date',
+        ]);
+
+        // Only update database when status is 'new'
+        if ($data['repeatStatus'] !== 'paid_off') {
+            return back()->with('info', 'No update applied unless status is "paid_off".');
         }
 
-        DB::beginTransaction(); // Start transaction
-        
-         
-         $address=Address::create([
-            'street'=>$validatedData['addrStreet'],
-            'city'=>$validatedData['addrCity'],
-            'state'=>$validatedData['addrState'],
-            'zipcode'=>$validatedData['zipcode'],
-          ]);
+        $updated = Customer::where('social_security_num', $data['repeatSsn'])
+            ->where('status', 'paid_off')
+            ->update([
+                'status'           => $data['repeatStatus'],
+                'registrationdate' => $data['repeatDate'],
+            ]);
 
-        
+        return $updated
+            ? back()->with('success', 'Customer status updated to new.')
+            : back()->with('info', 'No update applied — perhaps already "new".');
+    }
 
-         $customer=Customer::create([
-          'first_name'=>$validatedData['firstName'],
-          'last_name'=>$validatedData['lastName'],
-          'social_security_num'=>$validatedData['ssn'],
-          'phone'=>$validatedData['phone'],
-          'email'=>$validatedData['email'],
-          'type_of_business'=>$validatedData['businessType'],
-          'time_in_business'=>$validatedData['timeInBusiness'],
-          'business_phone'=>$validatedData['businessPhone'],
-          'registrationdate'=>$validatedData['registrationDate'],
-          'status'=>'new',
-          'branch_id'=>$branch_id,
-          'staff_username'=>$loanOfficer,
-          'address_id'=> $address->address_id,
-          ]);
-          
-          
-         
 
-          DB::commit(); // Commit transaction
-
-        return redirect()->route('dashboard')->with('success','Data saved!');
-        //}
-       // catch(\Illuminate\Database\QueryException $e)
-       // {
-        //  \Log::error('Insert failed: ' . $e->getMessage());
-         // return redirect()->back()->withInput()->with('error','An error occured during saving data!');
-          
-       // } 
 }
-}
+
+?>

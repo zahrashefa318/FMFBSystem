@@ -40,7 +40,21 @@
       </div>
 
       <div class="main">
-        <div class="main-title">Customers</div>
+        <div class="main-title">Customers
+          @foreach ($grouped as $status => $customers)
+        <h3>Status: {{ ucfirst($status) }} ({{ $customers->count() }} customers)</h3>
+        <ul>
+          @foreach ($customers as $cust)
+            <li>ID: {{ $cust->customer_id }}, {{ $cust->first_name }} {{ $cust->last_name }}, Registered: {{ $cust->registrationdate }}</li>
+          @endforeach
+        </ul>
+            @endforeach
+
+            @if ($grouped->isEmpty())
+              <p>No assigned customers yet.</p>
+            @endif
+
+        </div>
         <div class="placeholder">Customers</div>
       </div>
     </div>

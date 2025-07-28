@@ -20,13 +20,14 @@ use App\Http\Controllers\ClientRegistrationController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::post('/login',[MyAuthController::class,'login'])->name('login');
 Route::get('/dashboard', [MyAuthController::class,'dashboard'])->name('dashboard');
 
 Route::post('/to_customertbl', [ClientRegistrationController::class, 'store'])->name('to_customertbl');
-Route::post('/search_ssn', [MyTableController::class, 'search_ssn'])->name('search_ssn');
+Route::post('/search_ssn', [ClientRegistrationController::class, 'search_customer'])->name('search_ssn');
+Route::post('/update_customer',[ClientRegistrationController::class,'updateCustomerStatus'])->name('update_customer');
 
 
 
