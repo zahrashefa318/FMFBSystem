@@ -20,7 +20,7 @@
         <div class="sidebar-title">Menu</div>
 
         <div class="nav-links">
-          <a href="#" class="nav-link">New Customers</a>
+          <a href="{{route('loanOfficerDashboard')}}" class="nav-link">New Customers</a>
           <a href="#" class="nav-link">Pending Customers</a>
           <a href="#" class="nav-link">Approved Customers</a>
           <a href="#" class="nav-link">Denied Customers</a>
@@ -41,18 +41,31 @@
 
       <div class="main">
         <div class="main-title">Customers
-          @foreach ($grouped as $status => $customers)
-        <h3>Status: {{ ucfirst($status) }} ({{ $customers->count() }} customers)</h3>
-        <ul>
-          @foreach ($customers as $cust)
-            <li>ID: {{ $cust->customer_id }}, {{ $cust->first_name }} {{ $cust->last_name }}, Registered: {{ $cust->registrationdate }}</li>
-          @endforeach
-        </ul>
-            @endforeach
+          @if (session('error'))
+    <div class="alert alert-danger" role="alert">
+        {{ session('error') }}
+    </div>
+@endif
 
-            @if ($grouped->isEmpty())
-              <p>No assigned customers yet.</p>
-            @endif
+          @isset($grouped)
+    @if ($grouped->isNotEmpty())
+        @foreach ($grouped as $status => $customers)
+            <h3>Status: {{ ucfirst($status) }} ({{ $customers->count() }} customers)</h3>
+            <ul>
+                @foreach ($customers as $cust)
+                    <li>ID: {{ $cust->customer_id }}, {{ $cust->first_name }} {{ $cust->last_name }}, Registered: {{ $cust->registrationdate }}</li>
+                @endforeach
+            </ul>
+        @endforeach
+    @else
+        <p>No assigned customers yet.</p>
+    @endif
+
+@endisset
+
+
+
+
 
         </div>
         <div class="placeholder">Customers</div>

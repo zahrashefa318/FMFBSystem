@@ -26,7 +26,7 @@ class MyAuthController extends Controller{
         if ($username === 'receptionist12plk') {
             return view('customerForm');
     }
-        return view('loanOfficerDashboard');
+        return view('loanofficerdashboard');
 
     }
 }
