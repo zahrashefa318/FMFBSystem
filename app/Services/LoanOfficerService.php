@@ -6,7 +6,7 @@ use App\Models\Customer;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
-class LoanOfficerDashboardService
+class LoanOfficerService
 {
     /**
      * Get customers for the currently authenticated officer, grouped by status.
@@ -15,7 +15,7 @@ class LoanOfficerDashboardService
      */
     public function getMyCustomersGroupedByStatus(): Collection
     {
-        $username = Auth::user()->username;
+        $username = session('username');
 
         return Customer::where('staff_username', $username)
             ->select('customer_id', 'first_name', 'last_name', 'status', 'registrationdate')

@@ -29,9 +29,9 @@ Route::get('/dashboard', [MyAuthController::class,'dashboard'])->name('dashboard
 Route::post('/to_customertbl', [ClientRegistrationController::class, 'store'])->name('to_customertbl');
 Route::post('/search_ssn', [ClientRegistrationController::class, 'search_customer'])->name('search_ssn');
 Route::post('/update_customer',[ClientRegistrationController::class,'updateCustomerStatus'])->name('update_customer');
-Route::get('/loanofficerdashboard', [LoanOfficerController::class, 'loanOfficerDashboard'])
-     ->name('loanOfficerDashboard')
-     ->middleware('auth');
+Route::get('/onlycustomerlist', [LoanOfficerController::class, 'LoanOfficerdashboard'])
+     ->name('onlycustomerlist')->middleware('staff.auth');
+     
 
 
 

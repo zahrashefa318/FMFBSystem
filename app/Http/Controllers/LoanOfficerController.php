@@ -1,15 +1,15 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Services\LoanOfficerDashboardService;
+use App\Services\LoanOfficerService;
 
 class LoanOfficerController extends Controller
 {
-    public function LoanOfficerdashboard(LoanOfficerDashboardService $dashboard)
+    public function LoanOfficerdashboard(LoanOfficerService $dashboard)
     {
         $grouped = $dashboard->getMyCustomersGroupedByStatus();
         if ($grouped != null){
-             return view('loanofficerdashboard', ['grouped' => $grouped]);
+             return view('onlycustomerlist', ['grouped' => $grouped]);
         }
         return redirect()->back()->with('error', 'Invalid Id of staff!');
 
