@@ -6,6 +6,7 @@ use App\Http\Controllers\MyTableController;
 use App\Http\Controllers\MyAuthController;
 use App\Http\Controllers\ClientRegistrationController; 
 use App\Http\Controllers\LoanOfficerController;
+use App\Http\Controllers\LoanApplicationFormController;
 
 
 /*
@@ -31,7 +32,9 @@ Route::post('/search_ssn', [ClientRegistrationController::class, 'search_custome
 Route::post('/update_customer',[ClientRegistrationController::class,'updateCustomerStatus'])->name('update_customer');
 Route::get('/onlycustomerlist', [LoanOfficerController::class, 'LoanOfficerdashboard'])
      ->name('onlycustomerlist')->middleware('staff.auth');
-     
+Route::get('/customerdetails/{id}',[LoanOfficerController::class, 'customerdetails'])->name('customerdetails');
+Route::get('/loanApplicationForm', [LoanApplicationFormController::class, 'viewLoanApplicationForm'])
+     ->name('loanApplicationForm');     
 
 
 

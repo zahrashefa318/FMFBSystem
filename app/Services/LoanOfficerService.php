@@ -23,6 +23,12 @@ class LoanOfficerService
             ->get()
             ->groupBy('status');
     }
+    
+    public function customerdetailsservice($id)
+{
+    return Customer::with(['address','branch.address'])->findOrFail($id);
+}
+
 }
 
 

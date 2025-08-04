@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <title>Loan Officer Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css">
@@ -66,38 +68,38 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  $(function() {
-  
-    // Delegated click event handler
-    $(document).on('click', '.clickable-row', function() {
-      const url = $(this).data('url');
-      if (url) window.location.href = url;
-    });
+$('.load-new').on('click', function(e){
+  e.preventDefault();
+  var target = $('#placeholderSection');
+  // Collapse it
+  var bsCollapse = bootstrap.Collapse.getOrCreateInstance(target[0]);
+  bsCollapse.hide();
 
-    // AJAX trigger for New Customers
-    $('.load-new').on('click', function(e) {
-      e.preventDefault();
-      const target = $('#placeholderSection');
-      const bsCollapse = bootstrap.Collapse.getOrCreateInstance(target[0]);
-      bsCollapse.hide();
-
-      $.ajax({
-        url: $(this).data('url'),
-        method: 'GET',
-        headers: { 'Accept': 'text/html' },
-        success: function(html) {
-          target.html(html);
-          bsCollapse.show();
-        },
-        error: function(xhr) {
-          target.html(`<p class="text-danger p-3">Error loading data (${xhr.status})</p>`);
-          bsCollapse.show();
-        }
-      });
-    });
-
+  // Now AJAX load the table
+  $.ajax({
+    url: $(this).data('url'),
+    success: function(html){
+      target.html(html);
+      bsCollapse.show(); // then show once content is ready
+    },
+    error: function(){
+      target.html('<p class="text-danger p‑3">Error loading data</p>');
+      bsCollapse.show();
+    }
+  });
+});
+</script>
+<!-- script for clickable rows to show customer details-->
+<script>
+  $(document).on('click', '.clickable-row', function() {
+    const url = $(this).data('url');
+    if (url) {
+      window.location.href = url;
+    }
   });
 </script>
+
+
 
 
 

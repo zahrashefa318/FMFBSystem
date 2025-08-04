@@ -18,6 +18,8 @@ class StaffSessionAuth
     {   if (!session()->has('username')) {
         return redirect()->route('welcome')->with('error', 'Please log in.');
     }
-        return $next($request);
+    else
+        {return $next($request);}
+        
     }
 }

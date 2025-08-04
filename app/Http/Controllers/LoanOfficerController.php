@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Services\LoanOfficerService;
 
+
 class LoanOfficerController extends Controller
 {
     public function LoanOfficerdashboard(LoanOfficerService $dashboard)
@@ -14,6 +15,10 @@ class LoanOfficerController extends Controller
         return redirect()->back()->with('error', 'Invalid Id of staff!');
 
        
+    }
+    public function customerdetails($id ,  LoanOfficerService $dashboard){
+        $customer=$dashboard->customerdetailsservice($id);
+        return view('customerdetails', compact('customer'));
     }
 }
 

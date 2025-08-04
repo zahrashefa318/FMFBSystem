@@ -13,7 +13,7 @@ class Branch extends Model
     
     public function address()
     {
-        return $this->belongsTo(Address::class, 'address_id');
+        return $this->belongsTo(Address::class, 'addresses_id','address_id');
     }
 
 }
