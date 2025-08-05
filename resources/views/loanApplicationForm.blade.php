@@ -1,223 +1,276 @@
-{{-- resources/views/loanApplicationForm.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf‑8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-
-  <title>Business Loan Application</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Application Form</title>
   <style>
-    body {
-      background-color: #fff;
+    /* Reset default margins and padding */
+    * {
       margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      color: #fff;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .dashboard-container {
-      background-color: #341539;
-      padding: 1.5rem;
-      border-radius: 0.5rem;
-      max-width: 800px;
+
+    /* Set the background color of the page */
+    body {
+      font-family: Arial, sans-serif;
+      background-color:#fff; /* Dark purple background */
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    /* Style the form container */
+    form {
+      background-color: #301934; /* Dark purple form background */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: 100%;
-      display: flex;
-      flex-direction: column;
+      max-width: 900px;
+      box-sizing: border-box;
     }
-    .container-header {
+
+    /* Header style */
+    h1 {
       text-align: center;
-      margin-bottom: 1.5rem;
-      font-size: 1.25rem;
-      font-weight: 600;
       color: #fff;
+      margin-bottom: 20px;
     }
 
-    /* Uniform label + input sizing */
-    .form-label {
-      width: 180px;
-      min-width: 180px;
-      white-space: nowrap;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 8px;
+      vertical-align: top;
+    }
+
+    label {
+      display: inline-block;
+      width: 200px;
       text-align: left;
-    }
-    .form-control,
-    .form-select {
-      min-height: 2.45rem; /* matches label's approx height */
+      margin-bottom: 4px;
     }
 
-    fieldset {
-      border: 1px solid rgba(255,255,255,0.4);
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      max-width: 250px; /* Shortened width */
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
       border-radius: 4px;
-      padding: 1rem;
-      margin-bottom: 1.25rem;
-    }
-    legend {
-      color: #fff;
-      font-weight: bold;
-      padding: 0 0.5rem;
-    }
-    label, .form-label, .form-check-label, fieldset legend {
-      color: #fff;
+      background-color: #f9f9f9;
+      color: #333;
     }
 
-    .column-pair {
-      display: flex;
-      gap: 1rem;
-    }
-    .column-pair > div {
-      flex: 1;
+    button[type="submit"] {
+      width: auto;
+      padding: 10px 20px;
+      margin-top: 20px;
+      background-color: #5e2a84; /* Purple button */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
-    .btn-row { text-align: center; margin-top: auto; }
-    .btn-theme {
-      background: transparent;
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.7);
-      margin: 0.25rem;
+    button[type="submit"]:hover {
+      background-color: #4a1f6d; /* Darker purple on hover */
     }
-    .btn-theme:hover {
-      background: rgba(255,255,255,0.9);
-      color: #341539;
+
+    .agreement-section {
+      margin-top: 20px;
+      border-top: 2px solid #ccc;
+      padding-top: 20px;
+    }
+
+    .agreement-section label {
+      width: auto;
+      display: inline-block;
+    }
+
+    .signature-section {
+      margin-top: 20px;
+    }
+
+    .signature-section input[type="text"] {
+      width: 50%;
     }
   </style>
 </head>
 <body>
-  <div class="header-container">
-    <h1>Business Loan Application</h1>
-  </div>
 
-  <div class="dashboard-wrapper">
-    <div class="dashboard-container">
-      <div class="container-header">
-        Please complete the form below
-      </div>
+  <form action="/submit" method="POST">
+    <h1>Loan Application Form</h1>
+    <table>
+      <tr>
+        <td><label for="business_name">Business Name *</label></td>
+        <td><input type="text" id="business_name" name="business_name" required></td>
+      </tr>
+      <tr>
+        <td><label for="business_structure">Legal Structure</label></td>
+        <td><input type="text" id="business_structure" name="business_structure"></td>
+      </tr>
+      <tr>
+        <td><label for="address_street">Street Address *</label></td>
+        <td><input type="text" id="address_street" name="address_street" required></td>
+      </tr>
+      <tr>
+        <td><label for="address_city">City *</label></td>
+        <td><input type="text" id="address_city" name="address_city" required></td>
+      </tr>
+      <tr>
+        <td><label for="address_state">State *</label></td>
+        <td><input type="text" id="address_state" name="address_state" required></td>
+      </tr>
+      <tr>
+        <td><label for="address_zipcode">Zip Code *</label></td>
+        <td><input type="text" id="address_zipcode" name="address_zipcode" required></td>
+      </tr>
+      <tr>
+        <td><label for="phone">Phone Number *</label></td>
+        <td><input type="tel" id="phone" name="phone" required></td>
+      </tr>
+      <tr>
+        <td><label for="email">Email Address</label></td>
+        <td><input type="email" id="email" name="email"></td>
+      </tr>
+      <tr>
+        <td><label for="loan_amount">Loan Amount *</label></td>
+        <td><input type="number" id="loan_amount" name="loan_amount" required></td>
+      </tr>
+      <tr>
+        <td><label for="loan_purpose">Purpose *</label></td>
+        <td>
+          <select id="loan_purpose" name="loan_purpose" required>
+            <option value="">Select</option>
+            <option value="Equipment">Equipment Purchase</option>
+            <option value="Marketing">Marketing & Advertising</option>
+            <option value="WorkingCapital">Working Capital</option>
+            <option value="CapacityExpansion">Capacity Expansion</option>
+            <option value="Other">Other</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td><label for="repayment_term_months">Term (months) *</label></td>
+        <td><input type="number" id="repayment_term_months" name="repayment_term_months" required></td>
+      </tr>
+      <tr>
+        <td><label for="repayment_frequency">Frequency *</label></td>
+        <td>
+          <select id="repayment_frequency" name="repayment_frequency" required>
+            <option value="Monthly">Monthly</option>
+            <option value="Quarterly">Quarterly</option>
+            <option value="Annually">Annually</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td><label for="interest_rate">Interest Rate (%)</label></td>
+        <td><input type="number" id="interest_rate" name="interest_rate"></td>
+      </tr>
+      <tr>
+        <td><label for="guarantor_name">Guarantor Full Name *</label></td>
+        <td><input type="text" id="guarantor_name" name="guarantor_name" required></td>
+      </tr>
+      <tr>
+        <td><label for="guarantor_street">Guarantor Street Address *</label></td>
+        <td><input type="text" id="guarantor_street" name="guarantor_street" required></td>
+      </tr>
+      <tr>
+        <td><label for="guarantor_city">Guarantor City *</label></td>
+        <td><input type="text" id="guarantor_city" name="guarantor_city" required></td>
+      </tr>
+      <tr>
+        <td><label for="guarantor_state">Guarantor State *</label></td>
+        <td><input type="text" id="guarantor_state" name="guarantor_state" required></td>
+      </tr>
+      <tr>
+        <td><label for="guarantor_zip">Guarantor Zip Code *</label></td>
+        <td><input type="text" id="guarantor_zip" name="guarantor_zip" required></td>
+      </tr>
+      <tr>
+        <td><label for="guarantor_phone">Guarantor Phone *</label></td>
+        <td><input type="tel" id="guarantor_phone" name="guarantor_phone" required></td>
+      </tr>
+      <tr>
+        <td><label for="guarantor_email">Guarantor Email</label></td>
+        <td><input type="email" id="guarantor_email" name="guarantor_email"></td>
+      </tr>
+      <tr>
+        <td><label for="guarantor_signature">Guarantor Signature *</label></td>
+        <td><input type="text" id="guarantor_signature" name="guarantor_signature" required></td>
+      </tr>
+      <tr>
+        <td><label for="collateral_type">Collateral Type *</label></td>
+        <td><input type="text" id="collateral_type" name="collateral_type" required></td>
+      </tr>
+      <tr>
+        <td><label for="collateral_value">Collateral Value *</label></td>
+        <td><input type="number" id="collateral_value" name="collateral_value" required></td>
+      </tr>
+      <tr>
+        <td><label for="collateral_description">Collateral Description</label></td>
+        <td><input type="text" id="collateral_description" name="collateral_description"></td>
+      </tr>
+      <tr>
+        <td><label for="collateral_documents">Collateral Documents</label></td>
+        <td><input type="file" id="collateral_documents" name="collateral_documents" multiple></td>
+      </tr>
+      <tr>
+        <td><label for="additional_information">Additional Information</label></td>
+        <td><textarea id="additional_information" name="additional_information" rows="4"></textarea></td>
+      </tr>
+      
+    
+      
 
-      <form action="#" method="POST" enctype="multipart/form-data" novalidate>
-        @csrf
+      <!-- Agreement Checklist -->
+      <tr>
+        <td colspan="2" class="agreement-section">
+          <h3>Agreement Checklist</h3>
+          <label><input type="checkbox" name="agreement_checklist" required> I have provided all required documents.</label><br>
+          <label><input type="checkbox" name="agreement_checklist" required> I understand the loan terms and conditions.</label><br>
+          <label><input type="checkbox" name="agreement_checklist" required> I agree to the repayment schedule.</label><br>
+        </td>
+      </tr>
 
-        <fieldset>
-          <legend>1. Applicant &amp; Business Information</legend>
+      <!-- Customer Agreement -->
+      <tr>
+        <td colspan="2" class="agreement-section">
+          <label for="customer_agreement">Customer Agreement *</label><br>
+          <textarea id="customer_agreement" name="customer_agreement" rows="4" required></textarea>
+        </td>
+      </tr>
 
-          <div class="mb-3 row align-items-center">
-            <label for="business_name" class="form-label">Business Name *</label>
-            <input type="text" id="business_name" name="business_name"
-                   class="form-control col ms-3"
-                   required value="{{ old('business_name') }}">
-          </div>
+      <!-- Customer Signature -->
+      <tr>
+        <td colspan="2" class="signature-section">
+          <label for="customer_signature">Customer Signature *</label><br>
+          <input type="text" id="customer_signature" name="customer_signature" required>
+        </td>
+      </tr>
 
-          <div class="mb-3 row align-items-center">
-            <label for="business_structure" class="form-label">Legal Structure</label>
-            <input type="text" id="business_structure" name="business_structure"
-                   class="form-control col ms-3" placeholder="e.g. LLC"
-                   value="{{ old('business_structure') }}">
-          </div>
-
-          {{-- Business Address including label --}}
-          <div class="mb-3 row">
-            <label class="form-label">Business Address *</label>
-            <div class="col ms-3">
-              <div class="row g-2">
-                <div class="col-md-6"><input type="text" name="address_street" id="address_street"
-                  class="form-control" placeholder="Street" required
-                  value="{{ old('address_street') }}"></div>
-                <div class="col-md-3"><input type="text" name="address_city" id="address_city"
-                  class="form-control" placeholder="City" required
-                  value="{{ old('address_city') }}"></div>
-                <div class="col-md-2"><input type="text" name="address_zipcode" id="address_zipcode"
-                  class="form-control" placeholder="Zip" required
-                  value="{{ old('address_zipcode') }}"></div>
-                <div class="col-md-1"><input type="text" name="address_state" id="address_state"
-                  class="form-control" placeholder="State" required
-                  value="{{ old('address_state') }}"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="mb-3 row align-items-center">
-            <label for="phone" class="form-label">Phone Number *</label>
-            <input type="tel" id="phone" name="phone" class="form-control col ms-3"
-                   required value="{{ old('phone') }}">
-          </div>
-
-          <div class="mb-3 row align-items-center">
-            <label for="email" class="form-label">Email Address</label>
-            <input type="email" id="email" name="email" class="form-control col ms-3"
-                   value="{{ old('email') }}">
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>2. Loan Request Details</legend>
-          <div class="mb-3 row align-items-center">
-            <label for="loan_amount" class="form-label">Loan Amount *</label>
-            <input type="number" step="0.01" id="loan_amount" name="loan_amount"
-                   class="form-control col ms-3" required
-                   value="{{ old('loan_amount') }}">
-          </div>
-
-          <div class="mb-3 row align-items-center">
-            <label for="loan_purpose" class="form-label">Purpose *</label>
-
-            <select id="loan_purpose" name="loan_purpose"
-                    class="form-select col ms-3" required>
-              <option value="">– Select –</option>
-              @foreach(['Equipment','Marketing','WorkingCapital','CapacityExpansion','Other'] as $option)
-                @php
-                  $label = match ($option) {
-                    'Equipment'         => 'Equipment Purchase',
-                    'Marketing'         => 'Marketing & Advertising',
-                    'WorkingCapital'    => 'Working Capital',
-                    'CapacityExpansion' => 'Capacity Expansion',
-                    'Other'             => 'Other…',
-                    default             => "$option Purchase",
-                  };
-                @endphp
-                <option value="{{ $option }}"
-                  {{ old('loan_purpose') === $option ? 'selected' : '' }}>
-                  {{ $label }}
-                </option>
-              @endforeach
-            </select>
-            <input type="text" id="loan_purpose_other" name="loan_purpose_other"
-                   class="form-control ms-3 mt-2 col"
-                   placeholder="If ‘Other’, please describe"
-                   value="{{ old('loan_purpose_other') }}">
-          </div>
-
-          <div class="row mb-3 align-items-center">
-            <label for="repayment_term_months" class="form-label">Term (months) *</label>
-            <input type="number" id="repayment_term_months" name="repayment_term_months"
-                   class="form-control col ms-3" placeholder="e.g. 12" required
-                   value="{{ old('repayment_term_months') }}">
-
-            <label for="repayment_frequency" class="form-label ms-4">Frequency *</label>
-            <select id="repayment_frequency" name="repayment_frequency"
-                    class="form-select col ms-3" required>
-              @foreach(['Monthly','Quarterly','Annually'] as $freq)
-                <option value="{{ $freq }}"
-                  {{ old('repayment_frequency') === $freq ? 'selected' : '' }}>
-                  {{ $freq }}
-                </option>
-              @endforeach
-            </select>
-
-            <label for="interest_rate" class="form-label ms-4">Interest (%)</label>
-            <input type="number" step="0.01" id="interest_rate" name="interest_rate"
-                   class="form-control col ms-3" placeholder="10.5"
-                   value="{{ old('interest_rate') }}">
-          </div>
-        </fieldset>
-
-        {{-- Continue with sections 3, 4, 5 as before, adjusting label/field rows similarly... --}}
-        {{-- Final submit button --}}
-        <div class="btn-row">
-          <button type="submit" class="btn btn-theme w-100">Submit Application</button>
-        </div>
-      </form>
-    </div>
-  </div>
+      <tr>
+        <td colspan="2" style="text-align: center;">
+          <button type="submit">Submit Application</button>
+        </td>
+      </tr>
+    </table>
+  </form>
 
 </body>
 </html>

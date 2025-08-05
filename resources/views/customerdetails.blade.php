@@ -179,7 +179,7 @@
       </div>
 
       <div class="btn-row">
-        <a href="{{url('loanApplicationForm')}}" id="pending" name="pending"class="btn btn-theme">{{ $customer->status_button_text ?? 'Under Process' }}</a>
+        <a href="{{url('loanApplicationForm')}}?id={{$customer->customer_id}}" id="pending" name="pending"class="btn btn-theme">{{ $customer->status_button_text ?? 'Under Process' }}</a>
         <button type="button" class="btn btn-theme" onclick="window.print()">Print Detail</button>
         <a href="{{ url()->previous() }}" class="btn btn-theme">Back</a>
       </div>
