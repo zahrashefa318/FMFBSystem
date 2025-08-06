@@ -30,7 +30,7 @@ Route::get('/dashboard', [MyAuthController::class,'dashboard'])->name('dashboard
 Route::post('/to_customertbl', [ClientRegistrationController::class, 'store'])->name('to_customertbl');
 Route::post('/search_ssn', [ClientRegistrationController::class, 'search_customer'])->name('search_ssn');
 Route::post('/update_customer',[ClientRegistrationController::class,'updateCustomerStatus'])->name('update_customer');
-Route::get('/onlycustomerlist', [LoanOfficerController::class, 'LoanOfficerdashboard'])
+Route::get('/onlycustomerlist/{status}', [LoanOfficerController::class, 'LoanOfficerdashboard'])
      ->name('onlycustomerlist')->middleware('staff.auth');
 Route::get('/customerdetails/{id}',[LoanOfficerController::class, 'customerdetails'])->name('customerdetails');
 Route::get('/loanApplicationForm', [LoanApplicationFormController::class, 'viewLoanApplicationForm'])

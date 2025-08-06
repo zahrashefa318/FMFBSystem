@@ -24,13 +24,20 @@
         <div class="nav-links">
           <a href="#placeholderSection"
            class="nav-link load-new"
-           data-url="{{route('onlycustomerlist')}}"
+           data-url="{{route('onlycustomerlist',['status' => 'new'])}}"
            data-bs-target="#placeholderSection"
            role="button"
            aria-expanded="false"
            aria-controls="placeholderSection"
            >New Customers</a>
-          <a href="#" class="nav-link">Pending Customers</a>
+          <a href="#placeholderSection" 
+           class="nav-link load-pending"
+           data-url="{{route('onlycustomerlist',['status' => 'pending'])}}"
+           data-bs-target="#placeholderSection"
+           role="button"
+           aria-expanded="false"
+           aria-controls="placeholderSection"
+          >Pending Customers</a>
           <a href="#" class="nav-link">Approved Customers</a>
           <a href="#" class="nav-link">Denied Customers</a>
           <a href="#" class="nav-link">Paid Off Customers</a>
@@ -69,6 +76,27 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 $('.load-new').on('click', function(e){
+  e.preventDefault();
+  var target = $('#placeholderSection');
+  // Collapse it
+  var bsCollapse = bootstrap.Collapse.getOrCreateInstance(target[0]);
+  bsCollapse.hide();
+
+  // Now AJAX load the table
+  $.ajax({
+    url: $(this).data('url'),
+    success: function(html){
+      target.html(html);
+      bsCollapse.show(); // then show once content is ready
+    },
+    error: function(){
+      target.html('<p class="text-danger p‑3">Error loading data</p>');
+      bsCollapse.show();
+    }
+  });
+});
+//load pending customers--------------------------------------
+$('.load-pending').on('click', function(e){
   e.preventDefault();
   var target = $('#placeholderSection');
   // Collapse it
