@@ -5,28 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Loan Application Form</title>
   <style>
-    /* Reset default margins and padding */
+    /* General Reset */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    /* Set the background color of the page */
+    /* Body Styling */
     body {
       font-family: Arial, sans-serif;
-      background-color:#fff; /* Dark purple background */
-      color: white;
+      background-color: #f4f4f9;
+      color: #fff;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      height: 100vh;
+      min-height: 100vh;
       padding: 20px;
     }
 
-    /* Style the form container */
+    /* Form Container */
     form {
-      background-color: #301934; /* Dark purple form background */
+      background-color:  #341539;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -35,28 +35,29 @@
       box-sizing: border-box;
     }
 
-    /* Header style */
+    /* Header Styling */
     h1 {
       text-align: center;
       color: #fff;
       margin-bottom: 20px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    /* Grid Layout */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 20px;
     }
 
-    td {
-      padding: 8px;
-      vertical-align: top;
+    .grid-item {
+      display: flex;
+      flex-direction: column;
     }
 
     label {
-      display: inline-block;
-      width: 200px;
-      text-align: left;
-      margin-bottom: 4px;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
     }
 
     input[type="text"],
@@ -66,12 +67,11 @@
     select,
     textarea {
       width: 100%;
-      max-width: 250px; /* Shortened width */
       padding: 8px;
-      margin-top: 4px;
+      font-size: 0.95rem;
       border: 1px solid #ccc;
       border-radius: 4px;
-      background-color: #f9f9f9;
+      background: #f9f9f9;
       color: #333;
     }
 
@@ -79,7 +79,7 @@
       width: auto;
       padding: 10px 20px;
       margin-top: 20px;
-      background-color: #5e2a84; /* Purple button */
+      background-color: #5e2a84;
       color: white;
       border: none;
       border-radius: 4px;
@@ -87,26 +87,26 @@
     }
 
     button[type="submit"]:hover {
-      background-color: #4a1f6d; /* Darker purple on hover */
+      background-color: #4a1f6d;
     }
 
-    .agreement-section {
-      margin-top: 20px;
-      border-top: 2px solid #ccc;
-      padding-top: 20px;
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
-    .agreement-section label {
-      width: auto;
-      display: inline-block;
+    @media (max-width: 900px) {
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
-    .signature-section {
-      margin-top: 20px;
-    }
-
-    .signature-section input[type="text"] {
-      width: 50%;
+    @media (max-width: 600px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -114,163 +114,217 @@
 
   <form action="/submit" method="POST">
     <h1>Loan Application Form</h1>
-    <table>
-      <tr>
-        <td><label for="business_name">Business Name *</label></td>
-        <td><input type="text" id="business_name" name="business_name" required></td>
-      </tr>
-      <tr>
-        <td><label for="business_structure">Legal Structure</label></td>
-        <td><input type="text" id="business_structure" name="business_structure"></td>
-      </tr>
-      <tr>
-        <td><label for="address_street">Street Address *</label></td>
-        <td><input type="text" id="address_street" name="address_street" required></td>
-      </tr>
-      <tr>
-        <td><label for="address_city">City *</label></td>
-        <td><input type="text" id="address_city" name="address_city" required></td>
-      </tr>
-      <tr>
-        <td><label for="address_state">State *</label></td>
-        <td><input type="text" id="address_state" name="address_state" required></td>
-      </tr>
-      <tr>
-        <td><label for="address_zipcode">Zip Code *</label></td>
-        <td><input type="text" id="address_zipcode" name="address_zipcode" required></td>
-      </tr>
-      <tr>
-        <td><label for="phone">Phone Number *</label></td>
-        <td><input type="tel" id="phone" name="phone" required></td>
-      </tr>
-      <tr>
-        <td><label for="email">Email Address</label></td>
-        <td><input type="email" id="email" name="email"></td>
-      </tr>
-      <tr>
-        <td><label for="loan_amount">Loan Amount *</label></td>
-        <td><input type="number" id="loan_amount" name="loan_amount" required></td>
-      </tr>
-      <tr>
-        <td><label for="loan_purpose">Purpose *</label></td>
-        <td>
-          <select id="loan_purpose" name="loan_purpose" required>
-            <option value="">Select</option>
-            <option value="Equipment">Equipment Purchase</option>
-            <option value="Marketing">Marketing & Advertising</option>
-            <option value="WorkingCapital">Working Capital</option>
-            <option value="CapacityExpansion">Capacity Expansion</option>
-            <option value="Other">Other</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td><label for="repayment_term_months">Term (months) *</label></td>
-        <td><input type="number" id="repayment_term_months" name="repayment_term_months" required></td>
-      </tr>
-      <tr>
-        <td><label for="repayment_frequency">Frequency *</label></td>
-        <td>
-          <select id="repayment_frequency" name="repayment_frequency" required>
-            <option value="Monthly">Monthly</option>
-            <option value="Quarterly">Quarterly</option>
-            <option value="Annually">Annually</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td><label for="interest_rate">Interest Rate (%)</label></td>
-        <td><input type="number" id="interest_rate" name="interest_rate"></td>
-      </tr>
-      <tr>
-        <td><label for="guarantor_name">Guarantor Full Name *</label></td>
-        <td><input type="text" id="guarantor_name" name="guarantor_name" required></td>
-      </tr>
-      <tr>
-        <td><label for="guarantor_street">Guarantor Street Address *</label></td>
-        <td><input type="text" id="guarantor_street" name="guarantor_street" required></td>
-      </tr>
-      <tr>
-        <td><label for="guarantor_city">Guarantor City *</label></td>
-        <td><input type="text" id="guarantor_city" name="guarantor_city" required></td>
-      </tr>
-      <tr>
-        <td><label for="guarantor_state">Guarantor State *</label></td>
-        <td><input type="text" id="guarantor_state" name="guarantor_state" required></td>
-      </tr>
-      <tr>
-        <td><label for="guarantor_zip">Guarantor Zip Code *</label></td>
-        <td><input type="text" id="guarantor_zip" name="guarantor_zip" required></td>
-      </tr>
-      <tr>
-        <td><label for="guarantor_phone">Guarantor Phone *</label></td>
-        <td><input type="tel" id="guarantor_phone" name="guarantor_phone" required></td>
-      </tr>
-      <tr>
-        <td><label for="guarantor_email">Guarantor Email</label></td>
-        <td><input type="email" id="guarantor_email" name="guarantor_email"></td>
-      </tr>
-      <tr>
-        <td><label for="guarantor_signature">Guarantor Signature *</label></td>
-        <td><input type="text" id="guarantor_signature" name="guarantor_signature" required></td>
-      </tr>
-      <tr>
-        <td><label for="collateral_type">Collateral Type *</label></td>
-        <td><input type="text" id="collateral_type" name="collateral_type" required></td>
-      </tr>
-      <tr>
-        <td><label for="collateral_value">Collateral Value *</label></td>
-        <td><input type="number" id="collateral_value" name="collateral_value" required></td>
-      </tr>
-      <tr>
-        <td><label for="collateral_description">Collateral Description</label></td>
-        <td><input type="text" id="collateral_description" name="collateral_description"></td>
-      </tr>
-      <tr>
-        <td><label for="collateral_documents">Collateral Documents</label></td>
-        <td><input type="file" id="collateral_documents" name="collateral_documents" multiple></td>
-      </tr>
-      <tr>
-        <td><label for="additional_information">Additional Information</label></td>
-        <td><textarea id="additional_information" name="additional_information" rows="4"></textarea></td>
-      </tr>
-      
-    
-      
 
-      <!-- Agreement Checklist -->
-      <tr>
-        <td colspan="2" class="agreement-section">
-          <h3>Agreement Checklist</h3>
-          <label><input type="checkbox" name="agreement_checklist" required> I have provided all required documents.</label><br>
-          <label><input type="checkbox" name="agreement_checklist" required> I understand the loan terms and conditions.</label><br>
-          <label><input type="checkbox" name="agreement_checklist" required> I agree to the repayment schedule.</label><br>
-        </td>
-      </tr>
+    <!-- Business Information -->
+    <div class="grid-container">
+      <div class="grid-item">
+        <label for="business_name">Business Name *</label>
+        <input type="text" id="business_name" name="business_name" required>
+      </div>
+      <div class="grid-item">
+        <label for="business_structure">Legal Structure</label>
+        <input type="text" id="business_structure" name="business_structure">
+      </div>
+      <div class="grid-item">
+        <label for="address_street">Street Address *</label>
+        <input type="text" id="address_street" name="address_street" required>
+      </div>
+      <div class="grid-item">
+        <label for="address_city">City *</label>
+        <input type="text" id="address_city" name="address_city" required>
+      </div>
+      <div class="grid-item">
+        <label for="address_state">State *</label>
+        <input type="text" id="address_state" name="address_state" required>
+      </div>
+      <div class="grid-item">
+        <label for="address_zipcode">Zip Code *</label>
+        <input type="text" id="address_zipcode" name="address_zipcode" required>
+      </div>
+      <div class="grid-item">
+        <label for="phone">Phone Number *</label>
+        <input type="tel" id="phone" name="phone" required>
+      </div>
+      <div class="grid-item">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email">
+      </div>
+      <div class="grid-item">
+        <label for="loan_amount">Loan Amount *</label>
+        <input type="number" id="loan_amount" name="loan_amount" required>
+      </div>
+      <div class="grid-item">
+        <label for="loan_purpose">Purpose *</label>
+        <select id="loan_purpose" name="loan_purpose" required>
+          <option value="">Select</option>
+          <option value="Equipment">Equipment Purchase</option>
+          <option value="Marketing">Marketing & Advertising</option>
+          <option value="WorkingCapital">Working Capital</option>
+          <option value="CapacityExpansion">Capacity Expansion</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="grid-item">
+        <label for="repayment_term_months">Term (months) *</label>
+        <input type="number" id="repayment_term_months" name="repayment_term_months" required>
+      </div>
+      <div class="grid-item">
+        <label for="repayment_frequency">Frequency *</label>
+        <select id="repayment_frequency" name="repayment_frequency" required>
+          <option value="Monthly">Monthly</option>
+          <option value="Quarterly">Quarterly</option>
+          <option value="Annually">Annually</option>
+        </select>
+      </div>
+      <div class="grid-item">
+        <label for="interest_rate">Interest Rate (%)</label>
+        <input type="number" id="interest_rate" name="interest_rate">
+      </div>
+    </div>
 
-      <!-- Customer Agreement -->
-      <tr>
-        <td colspan="2" class="agreement-section">
-          <label for="customer_agreement">Customer Agreement *</label><br>
-          <textarea id="customer_agreement" name="customer_agreement" rows="4" required></textarea>
-        </td>
-      </tr>
+    <!-- Guarantor Information -->
+    <div class="grid-container">
+      <div class="grid-item">
+        <label for="guarantor_name">Guarantor Full Name *</label>
+        <input type="text" id="guarantor_name" name="guarantor_name" required>
+      </div>
+      <div class="grid-item">
+        <label for="guarantor_street">Guarantor Street Address *</label>
+        <input type="text" id="guarantor_street" name="guarantor_street" required>
+      </div>
+      <div class="grid-item">
+        <label for="guarantor_city">Guarantor City *</label>
+        <input type="text" id="guarantor_city" name="guarantor_city" required>
+      </div>
+      <div class="grid-item">
+        <label for="guarantor_state">Guarantor State *</label>
+        <input type="text" id="guarantor_state" name="guarantor_state" required>
+      </div>
+      <div class="grid-item">
+        <label for="guarantor_zip">Guarantor Zip Code *</label>
+        <input type="text" id="guarantor_zip" name="guarantor_zip" required>
+      </div>
+      <div class="grid-item">
+        <label for="guarantor_phone">Guarantor Phone *</label>
+        <input type="tel" id="guarantor_phone" name="guarantor_phone" required>
+      </div>
+      <div class="grid-item">
+        <label for="guarantor_email">Guarantor Email</label>
+        <input type="email" id="guarantor_email" name="guarantor_email">
+      </div>
+      <div class="grid-item">
+        <label for="guarantor_signature">Guarantor Signature *</label>
+        <input type="text" id="guarantor_signature" name="guarantor_signature" required>
+      </div>
+    </div>
 
-      <!-- Customer Signature -->
-      <tr>
-        <td colspan="2" class="signature-section">
-          <label for="customer_signature">Customer Signature *</label><br>
-          <input type="text" id="customer_signature" name="customer_signature" required>
-        </td>
-      </tr>
+    <!-- Collateral Information -->
+    <div class="grid-container">
+      <div class="grid-item">
+        <label for="collateral_type">Collateral Type *</label>
+        <input type="text" id="collateral_type" name="collateral_type" required>
+      </div>
+      <div class="grid-item">
+        <label for="collateral_value">Collateral Value *</label>
+        <input type="number" id="collateral_value" name="collateral_value" required>
+      </div>
+      <div class="grid-item">
+        <label for="collateral_description">Collateral Description</label>
+        <input type="text" id="collateral_description" name="collateral_description">
+      </div>
+      <div class="grid-item">
+        <label for="collateral_documents">Collateral Documents</label>
+        <input type="file" id="collateral_documents" name="collateral_documents" multiple>
+      </div>
+    </div>
 
-      <tr>
-        <td colspan="2" style="text-align: center;">
-          <button type="submit">Submit Application</button>
-        </td>
-      </tr>
-    </table>
+    <!-- Additional Information -->
+    <div class="grid-container">
+      <div class="grid-item">
+        <label for="additional_information">Additional Information</label>
+        <textarea id="additional_information" name="additional_information" rows="4"></textarea>
+      </div>
+    </div>
+
+    <!-- Agreement Checklist -->
+    <div class="grid-container">
+      <div class="grid-item">
+        <label><input type="checkbox" name="agreement_checklist" required> I have provided all required documents.</label>
+      </div>
+      <div class="grid-item">
+        <label><input type="checkbox" name="agreement_checklist" required> I understand the loan terms and conditions.</label>
+      </div>
+      <div class="grid-item">
+        <label><input type="checkbox" name="agreement_checklist" required> I agree to the repayment schedule.</label>
+      </div>
+    </div>
+
+    <!-- Customer Agreement -->
+        <!-- Customer Agreement -->
+    <div class="grid-container">
+      <div class="grid-item">
+        <label><input type="checkbox" name="customer_agreement" required> I agree to the terms and conditions.</label>
+      </div>
+      <div class="grid-item">
+        <label><input type="checkbox" name="customer_agreement" required> I consent to the use of my personal data as per the privacy policy.</label>
+      </div>
+      <div class="grid-item">
+        <label><input type="checkbox" name="customer_agreement" required> I confirm the information provided is accurate to the best of my knowledge.</label>
+      </div>
+    </div>
+
+    <!-- Signature Section -->
+    <div class="grid-container" >
+      <div class="grid-item">
+        <div class="signature-section"style="border: 2px solid purple; padding: 20px;">
+      <label>Customer Signature *</label>
+      <canvas id="signature-pad"></canvas>
+      <button type="button" id="clear-signature">Clear Signature</button>
+      <input type="hidden" name="customer_signature" id="customer_signature" required>
+    </div>
+
+      </div>
+      <div class="grid-item">
+        <label for="date_signed">Date Signed *</label>
+        <input type="date" id="date_signed" name="date_signed" required>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="grid-container">
+      <div class="grid-item">
+        <button type="submit">Submit Application</button>
+      </div>
+    </div>
   </form>
+   <script src="https://cdn.jsdelivr.net/npm/signature_pad@latest/dist/signature_pad.umd.min.js"></script>
+<script>
+  const canvas = document.getElementById('signature-pad');
+  const signaturePad = new SignaturePad(canvas, { penColor: '#fff' });
+
+  function resizeCanvas() {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    canvas.getContext('2d').scale(ratio, ratio);
+    signaturePad.clear();
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  document.getElementById('clear-signature').addEventListener('click', () => signaturePad.clear());
+  document.querySelector('form').addEventListener('submit', function(event) {
+    if (signaturePad.isEmpty()) {
+      alert('Please provide your signature.');
+      event.preventDefault();
+    } else {
+      document.getElementById('customer_signature').value = signaturePad.toDataURL();
+    }
+  });
+</script>
 
 </body>
 </html>
+
+ 

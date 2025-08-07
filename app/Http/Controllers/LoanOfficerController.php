@@ -17,11 +17,10 @@ class LoanOfficerController extends Controller
             
         
         elseif($status == 'pending'){
-            if ($grouped->has('pending') ){
-                $pending_customers=$grouped->get('pending');
+                $pending_customers = $grouped->get('pending') ?? new Collection();
                 return view('onlycustomerlist', ['customer' => $pending_customers]);
             }
-        }
+        
         elseif($status =='approved'){
             if ($grouped->has('approved') ){
                 $approved_customers=$grouped->get('approved');
