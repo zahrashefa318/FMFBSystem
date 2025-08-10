@@ -108,12 +108,32 @@
         grid-template-columns: 1fr;
       }
     }
+@media print {
+  #printButton,
+  button[type="submit"] {
+    display: none;
+  }
+
+  /* Optional: Fit content to one page by scaling */
+  html, body {
+    zoom: 80%; /* Adjust as needed */
+  }
+
+  /* Set margins and page size */
+  @page {
+    size: auto;
+    margin: 1cm;
+  }
+}
+
+
   </style>
 </head>
 <body>
 
-  <form action="/submit" method="POST">
+  <form action="{{url('submitForm')}}" method="POST">
     <h1>Loan Application Form</h1>
+    <input type="hidden" name="id" value="{{ $id }}">
 
     <!-- Business Information -->
     <div class="grid-container">
@@ -213,8 +233,8 @@
         <input type="email" id="guarantor_email" name="guarantor_email">
       </div>
       <div class="grid-item">
-        <label for="guarantor_signature">Guarantor Signature *</label>
-        <input type="text" id="guarantor_signature" name="guarantor_signature" required>
+        <label for="guarantor_relationship">Guarantor Relationship *</label>
+        <input type="text" id="guarantor_relationship" name="guarantor_relationship" required>
       </div>
     </div>
 
@@ -273,22 +293,47 @@
       </div>
     </div>
 
-    <!-- Signature Section -->
-    <div class="grid-container" >
-      <div class="grid-item">
-        <div class="signature-section"style="border: 2px solid purple; padding: 20px;">
-      <label>Customer Signature *</label>
-      <canvas id="signature-pad"></canvas>
-      <button type="button" id="clear-signature">Clear Signature</button>
-      <input type="hidden" name="customer_signature" id="customer_signature" required>
-    </div>
+    
+    
+  </div>
+</div>
 
+<!-- Signature Section with side-by-side layout -->
+<div class="grid-container">
+  <div class="grid-item" style="grid-column: span 2;">
+    <div style="display: flex; gap: 20px; justify-content: space-between; align-items: flex-start;">
+
+      <!-- Customer Signature -->
+      <div style="flex: 1; border: 2px solid purple; padding: 20px;">
+      <label for="signer_first_name">Customer full name *</label>
+      <input type="text" id="signer_first_name" name="customer_full_name" required>
+        <label>Customer Signature *</label>
+        <canvas id="signature-pad-customer"></canvas>
+        <button type="button" id="clear-signature-customer">Clear</button>
+        <input type="hidden" name="customer_signature" id="customer_signature" required>
       </div>
-      <div class="grid-item">
+
+      <!-- Guarantor Signature -->
+      <div style="flex: 1; border: 2px solid purple; padding: 20px;">
+      <label for="signer_last_name">Guarantor full name *</label>
+      <input type="text" id="signer_last_name" name="guarantor_full_name" required>
+        <label>Guarantor Signature *</label>
+        <canvas id="signature-pad-guarantor"></canvas>
+        <button type="button" id="clear-signature-guarantor">Clear</button>
+        <input type="hidden" name="guarantor_signature" id="guarantor_signature" required>
+      </div>
+
+      <!-- Date Signed -->
+      <div style="flex: 1; padding: 20px;">
         <label for="date_signed">Date Signed *</label>
-        <input type="date" id="date_signed" name="date_signed" required>
+        <input type="date" id="date_signed" name="date_signed" required style="width: 100%;">
       </div>
+
     </div>
+  </div>
+</div>
+
+
 
     <!-- Submit Button -->
     <div class="grid-container">
@@ -296,33 +341,112 @@
         <button type="submit">Submit Application</button>
       </div>
     </div>
-  </form>
-   <script src="https://cdn.jsdelivr.net/npm/signature_pad@latest/dist/signature_pad.umd.min.js"></script>
-<script>
-  const canvas = document.getElementById('signature-pad');
-  const signaturePad = new SignaturePad(canvas, { penColor: '#fff' });
+    <div class="grid-container">
+      <div class="grid-item">
+  <button type="button" id="printButton" onclick="window.print()">Print Application</button>
+</div>
+  </div>
 
-  function resizeCanvas() {
-    const ratio = Math.max(window.devicePixelRatio || 1, 1);
-    canvas.width = canvas.offsetWidth * ratio;
-    canvas.height = canvas.offsetHeight * ratio;
-    canvas.getContext('2d').scale(ratio, ratio);
-    signaturePad.clear();
+
+  </form>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@latest/dist/signature_pad.umd.min.js"></script>
+<script>
+  const customerCanvas = document.getElementById('signature-pad-customer');
+  const guarantorCanvas = document.getElementById('signature-pad-guarantor');
+
+  const customerPad = new SignaturePad(customerCanvas, { penColor: '#fff' });
+  const guarantorPad = new SignaturePad(guarantorCanvas, { penColor: '#fff' });
+
+  function resizeSignatureCanvas(canvas, pad) {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    pad.clear();
   }
 
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
+  window.addEventListener('resize', () => {
+    resizeSignatureCanvas(customerCanvas, customerPad);
+    resizeSignatureCanvas(guarantorCanvas, guarantorPad);
+  });
 
-  document.getElementById('clear-signature').addEventListener('click', () => signaturePad.clear());
-  document.querySelector('form').addEventListener('submit', function(event) {
-    if (signaturePad.isEmpty()) {
-      alert('Please provide your signature.');
-      event.preventDefault();
-    } else {
-      document.getElementById('customer_signature').value = signaturePad.toDataURL();
+  // Initial canvas resize
+  resizeSignatureCanvas(customerCanvas, customerPad);
+  resizeSignatureCanvas(guarantorCanvas, guarantorPad);
+
+  // Clear buttons
+  document.getElementById('clear-signature-customer').addEventListener('click', () => {
+    customerPad.clear();
+  });
+  document.getElementById('clear-signature-guarantor').addEventListener('click', () => {
+    guarantorPad.clear();
+  });
+
+  // On form submit
+  document.querySelector('form').addEventListener('submit', function (e) {
+    if (customerPad.isEmpty()) {
+      alert('Please provide the customer signature.');
+      e.preventDefault();
+      return;
     }
+    if (guarantorPad.isEmpty()) {
+      alert('Please provide the guarantor signature.');
+      e.preventDefault();
+      return;
+    }
+
+    document.getElementById('customer_signature').value = customerPad.toDataURL();
+    document.getElementById('guarantor_signature').value = guarantorPad.toDataURL();
   });
 </script>
+<!-- -------script for data sanitization and validation for the form---------  -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+  const phoneField = form.phone;
+  const phonePattern = /^\(\d{3}\) \d{3}-\d{4}$/;
+
+  function showError(field, msg) {
+    field.setCustomValidity(msg);
+    field.reportValidity();
+  }
+  function clearError(field) {
+    field.setCustomValidity('');
+  }
+
+  // Auto-format as user types:
+  phoneField.addEventListener('input', (e) => {
+    let digits = e.target.value.replace(/\D/g, '');
+    let match = digits.match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    if (match) {
+      e.target.value = !match[2]
+        ? match[1]
+        : `(${match[1]}) ${match[2]}${match[3] ? '-' + match[3] : ''}`;
+    }
+  });
+
+  // Validate format on blur and submit:
+  function validatePhone() {
+    if (!phonePattern.test(phoneField.value)) {
+      showError(phoneField, 'Phone must be in format (123) 456‑7890');
+      return false;
+    }
+    clearError(phoneField);
+    return true;
+  }
+
+  phoneField.addEventListener('blur', validatePhone);
+
+  form.addEventListener('submit', function(e) {
+    if (!validatePhone()) {
+      e.preventDefault();
+    } else {
+      // Signature logic, etc.
+    }
+  });
+});
+</script>
+
 
 </body>
 </html>
