@@ -11,13 +11,7 @@
 3. [Tech Stack](#tech-stack)  
 4. [Prerequisites](#prerequisites)  
 5. [Setup & Installation](#setup--installation)  
-6. [Development Setup](#development-setup)  
-7. [Usage](#usage)  
-8. [Testing](#testing)  
-9. [Configuration](#configuration)  
-10. [Contributing](#contributing)  
-11. [License](#license)  
-12. [Contact](#contact)
+
 
 ---
 
