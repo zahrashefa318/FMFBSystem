@@ -34,7 +34,8 @@ Route::get('/onlycustomerlist/{status}', [LoanOfficerController::class, 'LoanOff
      ->name('onlycustomerlist')->middleware('staff.auth');
 Route::get('/customerdetails/{id}',[LoanOfficerController::class, 'customerdetails'])->name('customerdetails');
 Route::get('/loanApplicationForm', [LoanApplicationFormController::class, 'viewLoanApplicationForm'])
-     ->name('loanApplicationForm');     
+     ->name('loanApplicationForm');   
+Route::post('/submitForm',[LoanApplicationFormController::class,'submitForm'])->name('submitForm');  
 
 
 

@@ -9,7 +9,7 @@ class Collateral extends Model
 {
     protected $table = 'loan_collateral';
     protected $primaryKey = 'collateral_id';
-    protected $fillable=['collateral_type','description','estimated_value','document_reference','status'];
+    protected $fillable=['collateral_type','description','estimated_value','document_reference','status','application_id'];
 
     public function loanaccount(){
         return $this->belongsTo(LoanAccount::class,'loan_id');

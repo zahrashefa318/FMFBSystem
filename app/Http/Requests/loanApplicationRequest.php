@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoanApplicationRequest extends FormRequest
+class loanApplicationRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,7 +14,7 @@ class LoanApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id'                      => ['required', 'integer', 'exists:customers,id'],
+            'id'                      => ['required', 'integer', 'exists:customer_tbl,customer_id'],
             'business_name'           => ['required', 'string', 'max:255'],
             'business_structure'      => ['nullable', 'string', 'max:255'],
             'address_street'          => ['required', 'string', 'max:255'],
@@ -44,8 +44,12 @@ class LoanApplicationRequest extends FormRequest
             'collateral_documents'    => ['required', 'array'],
             'collateral_documents.*'  => ['file', 'mimes:pdf,jpeg,png,jpg', 'max:5120'], // 5MB
             'additional_information'  => ['nullable', 'string'],
-            'agreement_checklist'     => ['accepted'],
-            'customer_agreement'      => ['accepted'],
+            'agreement_checklist.one'   => ['accepted'],
+            'agreement_checklist.two'   => ['accepted'],
+            'agreement_checklist.three' => ['accepted'],
+            'customer_agreement.one' => ['accepted'],
+            'customer_agreement.two' => ['accepted'],
+            'customer_agreement.three' => ['accepted'], 
             'customer_full_name'      => ['required', "regex:/^[a-zA-Z'\\- ]+$/", 'max:100'],
             'guarantor_full_name'     => ['required', "regex:/^[a-zA-Z'\\- ]+$/", 'max:100'],
             'customer_signature'      => ['required'],

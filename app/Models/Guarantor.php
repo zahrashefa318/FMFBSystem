@@ -10,7 +10,7 @@ class Guarantor extends Model
     
     protected $tabel='loan_guarantors';
     protected $primarykey='guarantor_id';
-    protected $fillable=['guarantor_name','relationship','phone','email','id_number'];
+    protected $fillable=['guarantor_name','relationship','phone','email','address_id','customer_id'];
 
     public function loanaccount(){
         return $this->belongsTo(LoanAccount::class,'loan_id');
