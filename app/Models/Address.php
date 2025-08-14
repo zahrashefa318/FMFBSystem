@@ -13,7 +13,7 @@ class Address extends Model
 
     public function customers()
 {
-    return $this->hasMany(Customer::class, 'address_id');
+    return $this->hasMany(Customer::class, 'address_id', 'address_id');
 }
 }
  

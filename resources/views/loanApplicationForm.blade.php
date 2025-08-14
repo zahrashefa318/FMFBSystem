@@ -131,7 +131,7 @@
 </head>
 <body>
 
-  <form action="{{url('submitForm')}}" method="POST">
+  <form action="{{url('submitForm')}}" method="POST" enctype="multipart/form-data">
      @csrf
     <h1>Loan Application Form</h1>
     <input type="hidden" name="id" value="{{ $id }}">
@@ -279,13 +279,13 @@
     <!-- Agreement Checklist -->
     <div class="grid-container">
       <div class="grid-item">
-        <label><input type="checkbox" name="agreement_checklist.one" value="1" required> I have provided all required documents.</label>
+        <label><input type="checkbox" name="agreement_checklist_one" value="1" required> I have provided all required documents.</label>
       </div>
       <div class="grid-item">
-        <label><input type="checkbox" name="agreement_checklist.two" value="1" required> I understand the loan terms and conditions.</label>
+        <label><input type="checkbox" name="agreement_checklist_two" value="1" required> I understand the loan terms and conditions.</label>
       </div>
       <div class="grid-item">
-        <label><input type="checkbox" name="agreement_checklist.three" value="1"required> I agree to the repayment schedule.</label>
+        <label><input type="checkbox" name="agreement_checklist_three" value="1"required> I agree to the repayment schedule.</label>
       </div>
     </div>
 
@@ -293,13 +293,13 @@
         <!-- Customer Agreement -->
     <div class="grid-container">
       <div class="grid-item">
-        <label><input type="checkbox" name="customer_agreement.one" value="1" required> I agree to the terms and conditions.</label>
+        <label><input type="checkbox" name="customer_agreement_one" value="1" required> I agree to the terms and conditions.</label>
       </div>
       <div class="grid-item">
-        <label><input type="checkbox" name="customer_agreement.two" value="1" required> I consent to the use of my personal data as per the privacy policy.</label>
+        <label><input type="checkbox" name="customer_agreement_two" value="1" required> I consent to the use of my personal data as per the privacy policy.</label>
       </div>
       <div class="grid-item">
-        <label><input type="checkbox" name="customer_agreement.three"value="1"  required> I confirm the information provided is accurate to the best of my knowledge.</label>
+        <label><input type="checkbox" name="customer_agreement_three"value="1"  required> I confirm the information provided is accurate to the best of my knowledge.</label>
       </div>
     </div>
 

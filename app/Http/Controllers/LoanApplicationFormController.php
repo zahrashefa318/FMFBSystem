@@ -20,26 +20,38 @@ class LoanApplicationFormController extends Controller
         return view('loanApplicationForm',['id'=>$id]);
     }
 
-   public function submitForm(loanApplicationRequest $request): RedirectResponse
+  public function submitForm(loanApplicationRequest $request): 
     {
+        // Validated payload from your FormRequest
         $data = $request->validated();
 
+        // Ensure a date exists (service also defaults, but this keeps data explicit)
+        $data['date_signed'] = $data['date_signed'] ?? now()->toDateString();
+
+        // If a file is present, store it now and pass the saved path to the service.
+        // This saves from temp and gives you a stable path. Requires: php artisan storage:link
         if ($request->hasFile('collateral_documents')) {
-            $data['collateral_documents'] = $request->file('collateral_documents');
+            $data['collateral_documents'] = $request->file('collateral_documents')
+                                                   ->store('collateral_documents', 'public'); // e.g. "collateral_documents/abc123.pdf"
+        } else {
+            // Make sure the key exists even if no file uploaded (service tolerates null)
+            $data['collateral_documents'] = $data['collateral_documents'] ?? null;
         }
 
         try {
             $loanApp = $this->loanService->saveLoanApplication($data);
 
-            return back()->with('success', 'Application submitted! ID: ' . $loanApp->application_id);
+             return redirect()->back()->with('success', 'Data saved!');
         } catch (\Throwable $e) {
-            Log::error('Error in controller submitForm: ' . $e->getMessage());
+            Log::error('Error in controller submitForm: ' . $e->getMessage(), [
+                'exception' => $e,
+                'customer_id' => $data['id'] ?? null,
+            ]);
 
             return back()
                 ->withInput()
                 ->with('error', 'We encountered an issue submitting your loan application. Please try again or contact support.');
         }
-
     }
 }
 ?>
