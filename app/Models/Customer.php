@@ -26,7 +26,16 @@ class Customer extends Model
      public function loanaccount(){
         return $this->belongsTo(LoanAccount::class, 'active_loan_account','loan_id');
      }
-     
+     public function applications() {
+    return $this->hasMany(LoanApplication::class, 'customer_id', 'customer_id');
+}
+
+     public function businesses() {
+    return $this->hasMany(Business_info::class, 'customer_id', 'customer_id');
+}
+ public function guarantors() {
+    return $this->hasMany(Guarantor::class, 'customer_id', 'customer_id');
+}
 
 }
 

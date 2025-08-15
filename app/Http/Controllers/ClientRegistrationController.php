@@ -7,6 +7,7 @@ use App\Http\Controllers\MyTableController;
 use Illuminate\Http\Request;
 use DomainException;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Log;
 
 class ClientRegistrationController extends Controller
 {

@@ -35,26 +35,24 @@ class LoanApplicationService
 
                 // 3) Create business info (note: Business_info likely has PK = business_id)
                 /** @var \App\Models\Business_info $businessInfo */
-                $businessInfo = Business_info::create([
+                $businessInfo = $customer->businesses()->create([
                     'business_name'   => $data['business_name']        ?? null,
                     'legal_structure' => $data['business_structure']   ?? null,
                     'address_id'      => $businessAddress->address_id, // uses your key name
-                    'customer_id'     => $customer->customer_id,
                     'phone'           => $data['phone']                ?? null,
                     'email'           => $data['email']                ?? null,
                 ]);
 
                 // 4) Create loan application
                 /** @var \App\Models\LoanApplication $loanApplication */
-                $loanApplication = LoanApplication::create([
-                    'customer_id'             => $customer->customer_id,
+                $loanApplication = $customer->applications()->create([
                     'requested_amount'        => $this->toDecimal($data['loan_amount'] ?? null),
                     'terms_months'            => (int)($data['repayment_term_months'] ?? 0),
                     'application_submit_date' => $data['date_signed'] ?? now()->toDateString(),
                     'notes'                   => $data['additional_information'] ?? null,
                     'status'                  => $customer->status ?? 'pending',
                     // If Business_info PK is business_id (common in your schema), use that
-                    'business_id'             => $businessInfo->business_id ?? $businessInfo->id,
+                    'business_id'             => $businessInfo->id,
                     'purpose'                 => $data['loan_purpose']       ?? null,
                     'frequency'               => $data['repayment_frequency'] ?? null,
                     'interest_rate'           => $this->toDecimal($data['interest_rate'] ?? null),
@@ -72,13 +70,13 @@ class LoanApplicationService
                     'zipcode' => $data['guarantor_zip']    ?? null,
                 ]);
 
-                Guarantor::create([
+                $customer->guarantors()->create([
                     'guarantor_name' => $data['guarantor_name']        ?? ($data['guarantor_full_name'] ?? null),
                     'relationship'   => $data['guarantor_relationship'] ?? null,
                     'phone'          => $data['guarantor_phone']        ?? null,
                     'email'          => $data['guarantor_email']        ?? null,
                     'address_id'     => $guarantorAddress->address_id,
-                    'customer_id'    => $customer->customer_id,
+                
                 ]);
 
                 // 6) Collateral (file optional)
@@ -93,12 +91,13 @@ class LoanApplicationService
                     $documentPath = $data['collateral_documents'];
                 }
 
-                Collateral::create([
+                $loanApplication->collaterals()->create([
                     'collateral_type'    => $data['collateral_type']         ?? null,
                     'description'        => $data['collateral_description']  ?? null,
                     'estimated_value'    => $this->toDecimal($data['collateral_value'] ?? null),
                     'document_reference' => $documentPath, // may be null
-                    'application_id'     => $loanApplication->application_id,
+                    'status'             =>$customer->status,
+            
                 ]);
 
                 // Return with relationships if you like

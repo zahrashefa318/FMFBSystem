@@ -13,7 +13,7 @@ class Collateral extends Model
         'collateral_type','description','estimated_value',
         'document_reference','status','application_id'
     ];
-    // public $timestamps = false; // if your table lacks timestamps  :contentReference[oaicite:3]{index=3}
+    public $timestamps = false; // if your table lacks timestamps  :contentReference[oaicite:3]{index=3}
 
     public function loanApplication()
     {

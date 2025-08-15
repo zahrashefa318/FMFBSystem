@@ -7,6 +7,8 @@ use App\Http\Requests\loanApplicationRequest;
 use App\Services\LoanApplicationService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
+use App\Models\LoanApplication;
 class LoanApplicationFormController extends Controller
 {   
     protected LoanApplicationService $loanService;
@@ -20,14 +22,19 @@ class LoanApplicationFormController extends Controller
         return view('loanApplicationForm',['id'=>$id]);
     }
 
-  public function submitForm(loanApplicationRequest $request): 
+  public function submitForm(loanApplicationRequest $request) 
     {
+        Log::debug('submitForm HIT', ['req' => (string) Str::uuid()]);
         // Validated payload from your FormRequest
         $data = $request->validated();
+        Log::debug('validated payload', $data);
+        if (empty($data)) {
+                 Log::warning('validated payload is EMPTY — validation likely failed.');
+}
 
         // Ensure a date exists (service also defaults, but this keeps data explicit)
         $data['date_signed'] = $data['date_signed'] ?? now()->toDateString();
-
+       
         // If a file is present, store it now and pass the saved path to the service.
         // This saves from temp and gives you a stable path. Requires: php artisan storage:link
         if ($request->hasFile('collateral_documents')) {
@@ -38,20 +45,25 @@ class LoanApplicationFormController extends Controller
             $data['collateral_documents'] = $data['collateral_documents'] ?? null;
         }
 
-        try {
+        
+        
             $loanApp = $this->loanService->saveLoanApplication($data);
-
-             return redirect()->back()->with('success', 'Data saved!');
-        } catch (\Throwable $e) {
-            Log::error('Error in controller submitForm: ' . $e->getMessage(), [
-                'exception' => $e,
-                'customer_id' => $data['id'] ?? null,
-            ]);
+            
+            
+             //return back()->with([
+            //'success' => 'Application submitted!',
+          //  'application_id' => $loanApp->application_id,
+       // ]);
+        //catch (\Throwable $e) {
+         //   Log::error('Error in controller submitForm: ' . $e->getMessage(), [
+          //      'exception' => $e,
+              //  'customer_id' => $data['id'] ?? null,
+           // ]);
 
             return back()
                 ->withInput()
                 ->with('error', 'We encountered an issue submitting your loan application. Please try again or contact support.');
         }
     }
-}
+
 ?>

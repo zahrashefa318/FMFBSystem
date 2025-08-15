@@ -10,7 +10,7 @@ class Guarantor extends Model
     protected $table = 'loan_guarantors';      // FIX: $table, not $tabel
     protected $primaryKey = 'guarantor_id';    // FIX: $primaryKey, not $primarykey
     protected $fillable = ['guarantor_name','relationship','phone','email','address_id','customer_id'];
-    // public $timestamps = false;
+    public $timestamps = false;
 
     public function address()
     {
