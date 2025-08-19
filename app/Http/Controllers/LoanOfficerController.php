@@ -12,13 +12,13 @@ class LoanOfficerController extends Controller
         $grouped = $dashboard->getMyCustomersGroupedByStatus();
         if($status == 'new'){
                 $new_customers = $grouped->get('new') ?? new Collection();
-                return view('onlycustomerlist', ['customer' => $new_customers]);
+                return view('onlycustomerlist', ['customer' => $new_customers , 'status' =>'new']);
             }
             
         
         elseif($status == 'pending'){
                 $pending_customers = $grouped->get('pending') ?? new Collection();
-                return view('onlycustomerlist', ['customer' => $pending_customers]);
+                return view('onlycustomerlist', ['customer' => $pending_customers , 'status' =>'pending']);
             }
         
         elseif($status =='approved'){
@@ -38,10 +38,19 @@ class LoanOfficerController extends Controller
 
        
     }
-    public function customerdetails($id ,  LoanOfficerService $dashboard){
+
+
+    // function for loading  new customers details after clicking the customer list from loan officer dashboard :
+        public function customerdetails($id ,  LoanOfficerService $dashboard){
         $customer=$dashboard->customerdetailsservice($id);
         return view('customerdetails', compact('customer'));
-    }
+        }
+
+
+    //function for loading pending customers loan application information after clicking the list from loan officer dashboard :
+      public function customerLoanInformation(){
+        
+      }  
 }
 
 

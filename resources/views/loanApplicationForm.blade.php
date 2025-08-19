@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="eng">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Loan Application Form</title>
+   
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* General Reset */
+     /* General Reset */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+    
+     /* ----------- Loan Application Form--------*/
+
 
     /* Body Styling */
     body {
@@ -33,6 +38,7 @@
       width: 100%;
       max-width: 900px;
       box-sizing: border-box;
+      color: #fff;
     }
 
     /* Header Styling */
@@ -113,10 +119,13 @@
   button[type="submit"] {
     display: none;
   }
+  .no-print {
+    display: none !important;
+  }
 
   /* Optional: Fit content to one page by scaling */
   html, body {
-    zoom: 80%; /* Adjust as needed */
+    zoom: 70%; /* Adjust as needed */
   }
 
   /* Set margins and page size */
@@ -125,8 +134,43 @@
     margin: 1cm;
   }
 }
+/* ---------- buttons styling---------*/
+/* Only affect the two action buttons inside .button-row */
+.button-row .action-btn {
+  background-color: #5e2a84;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  line-height: 1.2;     /* normalize text box height */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color .2s ease;
+  margin-top: 0;        /* cancel global submit margin */
+  box-sizing: border-box;
+  display: inline-flex; /* consistent vertical alignment */
+  align-items: center;
+}
 
-
+.button-row .action-btn:hover {
+  background-color: #4a1f6d;
+}
+.button-row {
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 12px 0;
+      background: #341539;
+      z-index: 1;
+    }
+.action-btn.no-underline,
+.action-btn.no-underline:visited,
+.action-btn.no-underline:hover,
+.action-btn.no-underline:active {
+  text-decoration: none;
+}
   </style>
 </head>
 <body>
@@ -135,14 +179,25 @@
      @csrf
     <h1>Loan Application Form</h1>
     <input type="hidden" name="id" value="{{ $id }}">
-   @if ($errors->any())
-  <div class="alert alert-danger">
-    <ul>
-      @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-      @endforeach
-    </ul>
-  </div>
+    @foreach (['success', 'error', 'warning', 'info'] as $msg)
+    @if (session()->has($msg))
+        <div class="alert alert-{{ $msg === 'error' ? 'danger' : $msg }} alert-dismissible fade show" role="alert">
+            {{ session($msg) }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+@endforeach
+
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Please check the errors below:</strong>
+        <ul>
+            @foreach($errors->all() as $e)
+                <li>{{ $e }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 @endif
 
     <!-- Business Information -->
@@ -314,7 +369,7 @@
     <div style="display: flex; gap: 20px; justify-content: space-between; align-items: flex-start;">
 
       <!-- Customer Signature -->
-      <div style="flex: 1; border: 2px solid purple; padding: 20px;">
+      <div style="flex: 1; border: 2px solid purple; padding: 10px;">
       <label for="signer_first_name">Customer full name *</label>
       <input type="text" id="signer_first_name" name="customer_full_name" required>
         <label>Customer Signature *</label>
@@ -324,7 +379,7 @@
       </div>
 
       <!-- Guarantor Signature -->
-      <div style="flex: 1; border: 2px solid purple; padding: 20px;">
+      <div style="flex: 1; border: 2px solid purple; padding: 10px;">
       <label for="signer_last_name">Guarantor full name *</label>
       <input type="text" id="signer_last_name" name="guarantor_full_name" required>
         <label>Guarantor Signature *</label>
@@ -334,7 +389,7 @@
       </div>
 
       <!-- Date Signed -->
-      <div style="flex: 1; padding: 20px;">
+      <div style="flex: 1; padding: 10px;">
         <label for="date_signed">Date Signed *</label>
         <input type="date" id="date_signed" name="date_signed" required style="width: 100%;">
       </div>
@@ -346,16 +401,13 @@
 
 
     <!-- Submit Button -->
-    <div class="grid-container">
-      <div class="grid-item">
-        <button type="submit">Submit Application</button>
-      </div>
-    </div>
-    <div class="grid-container">
-      <div class="grid-item">
-  <button type="button" id="printButton" onclick="window.print()">Print Application</button>
+   <!-- Buttons Container (Submit & Back) -->
+<div class="button-row">
+  <a href="{{ route('dashboard') }}" class="action-btn no-print no-underline">  Back to Dashboard</a>
+  <button type="submit" class="action-btn no-print">Submit Application</button>
 </div>
-  </div>
+<button type="button" id="printButton" onclick="window.print()">Print Application</button>
+
 
 
   </form>
@@ -457,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

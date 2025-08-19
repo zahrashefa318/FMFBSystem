@@ -30,8 +30,8 @@ class LoanApplicationFormController extends Controller
         Log::debug('validated payload', $data);
         if (empty($data)) {
                  Log::warning('validated payload is EMPTY — validation likely failed.');
-}
 
+            }
         // Ensure a date exists (service also defaults, but this keeps data explicit)
         $data['date_signed'] = $data['date_signed'] ?? now()->toDateString();
        
@@ -40,25 +40,18 @@ class LoanApplicationFormController extends Controller
         if ($request->hasFile('collateral_documents')) {
             $data['collateral_documents'] = $request->file('collateral_documents')
                                                    ->store('collateral_documents', 'public'); // e.g. "collateral_documents/abc123.pdf"
-        } else {
+        }
+         else {
             // Make sure the key exists even if no file uploaded (service tolerates null)
             $data['collateral_documents'] = $data['collateral_documents'] ?? null;
         }
 
-        
-        
             $loanApp = $this->loanService->saveLoanApplication($data);
-            
-            
-             //return back()->with([
-            //'success' => 'Application submitted!',
-          //  'application_id' => $loanApp->application_id,
-       // ]);
-        //catch (\Throwable $e) {
-         //   Log::error('Error in controller submitForm: ' . $e->getMessage(), [
-          //      'exception' => $e,
-              //  'customer_id' => $data['id'] ?? null,
-           // ]);
+            if($loanApp){
+                     return redirect()
+                    ->back()
+                    ->with('success', 'Application submitted!');
+        }
 
             return back()
                 ->withInput()
