@@ -19,7 +19,7 @@
           default =>'Customers',
         };
       @endphp
-      <h5 class="mb-0">{{$customer_list_title}}</h5>
+      <h5 class="mb-0" style="text-align:center;">{{$customer_list_title}}</h5>
     </div>
 
     <div class="card-body p-3">
@@ -27,10 +27,10 @@
         <table class="table table-dark table-striped table-hover table-bordered mb-0 mx-auto">
           <thead class="table-light">
             <tr>
-              <th class="text-center" style="width:120px;">ID</th>
-              <th class="text-center" style="width:120px;">Name</th>
-              <th class="text-center" style="width:120px;">Registered Date</th>
-              <th class="text-center" style="width:120px;">Status</th>
+              <th class="text-center" style="width:120px;text-align:center;">ID</th>
+              <th class="text-center" style="width:120px;text-align:center;">Name</th>
+              <th class="text-center" style="width:120px;text-align:center;">Registered Date</th>
+              <th class="text-center" style="width:120px;text-align:center;">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -46,11 +46,13 @@
               @endphp
 
               <tr class="clickable-row align-middle"
-                  data-url="{{ route($routeName, $cust->customer_id) }}">
-                <td class="text-center">{{ $cust->customer_id }}</td>
-                <td class="text-center">{{ $cust->first_name }} {{ $cust->last_name }}</td>
-                <td class="text-center">{{ $cust->registrationdate }}</td>
-                <td class="text-center">{{ ucfirst($cust->status) }}</td>
+                  data-url="{{ route($routeName, $cust->customer_id) }}"
+                   onmouseover="this.style.cursor='pointer'; this.style.backgroundColor='lightsteelblue';"
+                   onmouseout="this.style.backgroundColor='';">
+                <td class="text-center" style="text-align:center;">{{ $cust->customer_id }}</td>
+                <td class="text-center" style="text-align:center;">{{ $cust->first_name }} {{ $cust->last_name }}</td>
+                <td class="text-center" style="text-align:center;">{{ $cust->registrationdate }}</td>
+                <td class="text-center" style="text-align:center;">{{ ucfirst($cust->status) }}</td>
               </tr>
             @empty
               <tr><td colspan="4" class="text-center">No assigned customers yet.</td></tr>

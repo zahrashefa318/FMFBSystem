@@ -36,7 +36,9 @@ Route::get('/customerdetails/{id}',[LoanOfficerController::class, 'customerdetai
 Route::get('/loanApplicationForm', [LoanApplicationFormController::class, 'viewLoanApplicationForm'])
      ->name('loanApplicationForm');   
 Route::post('/submitForm',[LoanApplicationFormController::class,'submitForm'])->name('submitForm');  
+Route::get('/customerLoanInformation/{id}',[LoanOfficerController::class, 'customerLoanInformation'])->name('customerLoanInformation');
 
+Route::post('/approvedCustomer/{customerId}',[LoanOfficerController::class, 'approvedCustomer'])->name('approvedCustomer');
 
 
 
