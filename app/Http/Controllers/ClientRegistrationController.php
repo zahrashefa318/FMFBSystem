@@ -34,7 +34,7 @@ class ClientRegistrationController extends Controller
             return back()->withErrors(['zipcode' => $e->getMessage()]);
         } catch (\Throwable $e) {
             Log::error('Registration error: ' . $e->getMessage());
-            return back()->withInput()->with('error', 'An error occurred saving data');
+            return back()->withInput()->with('error', 'An error occurred saving data or email is repeated in the system.');
         }
     }
 

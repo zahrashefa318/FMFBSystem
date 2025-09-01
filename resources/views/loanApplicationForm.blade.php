@@ -418,8 +418,8 @@
   const customerCanvas = document.getElementById('signature-pad-customer');
   const guarantorCanvas = document.getElementById('signature-pad-guarantor');
 
-  const customerPad = new SignaturePad(customerCanvas, { penColor: '#fff' });
-  const guarantorPad = new SignaturePad(guarantorCanvas, { penColor: '#fff' });
+  const customerPad = new SignaturePad(customerCanvas, { penColor: 'black' });
+  const guarantorPad = new SignaturePad(guarantorCanvas, { penColor: 'black' });
 
   function resizeSignatureCanvas(canvas, pad) {
     canvas.width = canvas.offsetWidth;

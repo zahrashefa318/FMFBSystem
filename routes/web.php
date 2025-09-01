@@ -7,7 +7,8 @@ use App\Http\Controllers\MyAuthController;
 use App\Http\Controllers\ClientRegistrationController; 
 use App\Http\Controllers\LoanOfficerController;
 use App\Http\Controllers\LoanApplicationFormController;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TestEmail;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,14 @@ Route::post('/submitForm',[LoanApplicationFormController::class,'submitForm'])->
 Route::get('/customerLoanInformation/{id}',[LoanOfficerController::class, 'customerLoanInformation'])->name('customerLoanInformation');
 
 Route::post('/approvedCustomer/{customerId}',[LoanOfficerController::class, 'approvedCustomer'])->name('approvedCustomer');
+
+Route::post('/emailSchedule/{loan:loan_id}',[LoanOfficerController::class, 'emailSchedule'])->name('emailSchedule');
+
+
+Route::get('/test-email', function () {
+    Mail::to('khadimalimi.999@gmail.com')->send(new TestEmail());
+    return 'Email sent (or failed — check logs)!';
+});
 
 
 
