@@ -23,9 +23,10 @@ End: {{ \Carbon\Carbon::parse($loan->end_date)->toDateString() }}
 
 
 
-<x-mail::button :url="route('loans.show', $loan->loan_id)" color="primary">
-View Schedule in Portal
-</x-mail::button>
+<x-mail::panel>
+The full payment schedule is attached as a PDF—no portal login required.
+</x-mail::panel>
+
 
 Thanks,<br>
 {{ config('app.name') }}

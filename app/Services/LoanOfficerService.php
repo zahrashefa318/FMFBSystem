@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Customer;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LoanOfficerService
 {
@@ -42,6 +43,14 @@ class LoanOfficerService
     }
 
 
+    //function for deleting customers from customer list in loan officer dashboard:
+    public function deleteCustomer($id){
+        return DB::transaction(function()use ($id){
+            $customer=Customer::findOrFail($id);
+            $customer->delete();// if ON DELETE CASCADE is set in DB, dependents go too
+            return true;
+        });
+    }
 }
 
 

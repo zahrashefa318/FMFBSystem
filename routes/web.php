@@ -42,6 +42,9 @@ Route::get('/customerLoanInformation/{id}',[LoanOfficerController::class, 'custo
 Route::post('/approvedCustomer/{customerId}',[LoanOfficerController::class, 'approvedCustomer'])->name('approvedCustomer');
 
 Route::post('/emailSchedule/{loan:loan_id}',[LoanOfficerController::class, 'emailSchedule'])->name('emailSchedule');
+Route::get('/email-sent', function () {
+    return view('emailSent');  // simple view for status
+})->name('emailSent');
 
 
 Route::get('/test-email', function () {
@@ -49,7 +52,7 @@ Route::get('/test-email', function () {
     return 'Email sent (or failed — check logs)!';
 });
 
-
+Route::delete('/customerdestroy/{id}',[LoanOfficerController::class, 'customerdestroy'])->name('customerdestroy');
 
 
 ?>

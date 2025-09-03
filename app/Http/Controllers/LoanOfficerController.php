@@ -138,8 +138,10 @@ class LoanOfficerController extends Controller
                 new LoanScheduleMailable($loan, $schedule, $paymentFixed)
             ); // Facade + Mailable pattern per docs. :contentReference[oaicite:4]{index=4}
 
-            return back()->with('status', 'Schedule emailed to '.$cust->email);
-        }
+            return redirect()
+                ->route('emailSent')
+                ->with('status', 'Schedule emailed to ' . $cust->email);
+                }
 
         /** DRY helper to build amortization schedule and return [schedule, paymentFixed] */
     private function buildSchedule(LoanAccount $loan): array
@@ -186,7 +188,28 @@ class LoanOfficerController extends Controller
 
         return [$schedule, $paymentFixed];
     }
-        }     
+
+
+
+    //function for deleting customers from loan officer's dashboard.
+    
+public function customerdestroy($id, LoanOfficerService $customerlist)
+{
+    try {
+        $customerlist->deleteCustomer($id);
+        return response()->json([
+            'ok' => true,
+            'message' => "Customer #$id deleted successfully"
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'ok' => false,
+            'message' => "Failed to delete customer #$id",
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+}     
 
  
 

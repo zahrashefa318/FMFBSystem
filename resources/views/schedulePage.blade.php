@@ -46,6 +46,28 @@
     <div class="d-flex justify-content-between align-items-center mb-1">
       <h1 class="h4 mb-0">Loan Repayment Schedule</h1>
 
+      @foreach (['success', 'error', 'warning', 'info'] as $msg)
+    @if (session()->has($msg))
+        <div class="alert alert-{{ $msg === 'error' ? 'danger' : $msg }} alert-dismissible fade show" role="alert">
+            {{ session($msg) }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+@endforeach
+
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Please check the errors below:</strong>
+        <ul>
+            @foreach($errors->all() as $e)
+                <li>{{ $e }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+
       {{-- Email schedule to approved customer --}}
       <form method="POST" action="{{ route('emailSchedule', $loanAcc->loan_id) }}" class="d-flex gap-2">
         @csrf
