@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; 
 use Illuminate\Support\Facades\Log; 
+use Illuminate\Support\Facades\Auth;
 
 class MyAuthController extends Controller{
     public function login(Request $req){
@@ -28,6 +29,14 @@ class MyAuthController extends Controller{
     }
         return view('loanofficerdashboard');
 
+    }
+
+    //function for logging out:
+    public function logout(Request $request){
+       Auth::logout();
+       $request->session()->invalidate(); // Invalidate the session
+       $request->session()->regenerateToken(); // Regenerate CSRF token
+       return redirect()->route('welcome')->with('success','you logged out!'); 
     }
 }
 ?>

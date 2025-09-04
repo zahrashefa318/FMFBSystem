@@ -43,7 +43,7 @@
       @if(session('error'))
   <div class="alert alert-danger">{{ session('error') }}</div>
 @endif
-      <form action="{{route('login')}}" method="POST">
+      <form action="{{route('login.post')}}" method="POST">
          @csrf
         <div class="mb-3">
           <label for="username" class="form-label">UserId</label>

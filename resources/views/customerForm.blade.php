@@ -119,7 +119,10 @@
 </form>
 
 
-        <a href="#" class="logout-link">Logout</a>
+        <a href="{{ url('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="logout-link">Logout</a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+          @csrf
+        </form>
       </div>
 
       <!-- Right panel: Customer Information Form -->

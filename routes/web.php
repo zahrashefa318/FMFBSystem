@@ -21,11 +21,15 @@ use App\Mail\TestEmail;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-})->name('welcome');
+})->name('welcome');*/
+Route::view('/login', function () {
+    return view('welcome');})->name('login');     // GET
+Route::post('/login',[MyAuthController::class,'login'])->name('login.post');
+Route::post('/logout',[MyAuthController::class, 'logout'])->name('logout');
 
-Route::post('/login',[MyAuthController::class,'login'])->name('login');
+Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 Route::get('/dashboard', [MyAuthController::class,'dashboard'])->name('dashboard');
 
 Route::post('/to_customertbl', [ClientRegistrationController::class, 'store'])->name('to_customertbl');
@@ -54,5 +58,5 @@ Route::get('/test-email', function () {
 
 Route::delete('/customerdestroy/{id}',[LoanOfficerController::class, 'customerdestroy'])->name('customerdestroy');
 
-
+});
 ?>
