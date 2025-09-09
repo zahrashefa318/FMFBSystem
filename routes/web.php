@@ -24,8 +24,14 @@ use App\Mail\TestEmail;
 /*Route::get('/', function () {
     return view('welcome');
 })->name('welcome');*/
-Route::view('/login', function () {
-    return view('welcome');})->name('login');     // GET
+Route::view('/', 'welcome')->name('welcome');  // shows your Blade
+
+
+// Show the login view (welcome) only at /login, for guests
+Route::view('/login', 'welcome')->middleware('guest')->name('login');
+
+
+
 Route::post('/login',[MyAuthController::class,'login'])->name('login.post');
 Route::post('/logout',[MyAuthController::class, 'logout'])->name('logout');
 
@@ -36,7 +42,7 @@ Route::post('/to_customertbl', [ClientRegistrationController::class, 'store'])->
 Route::post('/search_ssn', [ClientRegistrationController::class, 'search_customer'])->name('search_ssn');
 Route::post('/update_customer',[ClientRegistrationController::class,'updateCustomerStatus'])->name('update_customer');
 Route::get('/onlycustomerlist/{status}', [LoanOfficerController::class, 'LoanOfficerdashboard'])
-     ->name('onlycustomerlist')->middleware('staff.auth');
+     ->name('onlycustomerlist');
 Route::get('/customerdetails/{id}',[LoanOfficerController::class, 'customerdetails'])->name('customerdetails');
 Route::get('/loanApplicationForm', [LoanApplicationFormController::class, 'viewLoanApplicationForm'])
      ->name('loanApplicationForm');   

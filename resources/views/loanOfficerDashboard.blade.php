@@ -24,7 +24,7 @@
         <div class="nav-links">
           <a href="#placeholderSection"
            class="nav-link load-new"
-           data-url="{{route('onlycustomerlist',['status' => 'new'])}}"
+           data-url="{{route('onlycustomerlist',['status' => 'new'], false)}}"
            data-bs-target="#placeholderSection"
            role="button"
            aria-expanded="false"
@@ -32,7 +32,7 @@
            >New Customers</a>
           <a href="#placeholderSection" 
            class="nav-link load-pending"
-           data-url="{{route('onlycustomerlist',['status' => 'pending'])}}"
+           data-url="{{route('onlycustomerlist',['status' => 'pending'],false)}}"
            data-bs-target="#placeholderSection"
            role="button"
            aria-expanded="false"
@@ -51,7 +51,10 @@
 
         <!-- Logout link -->
         <div class="logout-link">
-          <a href="#">Logout</a>
+          <a href="{{ url('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="logout-link">Logout</a>
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+          @csrf
+        </form>
         </div>
       </div>
 

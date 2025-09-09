@@ -3,40 +3,44 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; 
-use Illuminate\Support\Facades\Log; 
 use Illuminate\Support\Facades\Auth;
 
-class MyAuthController extends Controller{
-    public function login(Request $req){
-        $user_id = $req->input('user_id');
-        $password=$req->input('password');
+class MyAuthController extends Controller
+{
+    // POST /login
+    public function login(Request $request)
+    {
+        $data = $request->validate([
+            'user_id'  => 'required|string',
+            'password' => 'required|string',
+        ]);
 
-        $staff=DB::table('stafftbl')->where ('username',$user_id)
-                                    ->where('password',$password)
-                                    ->first();
-
-        if ($staff){
-            session(['username'=>$user_id]);
-            return redirect()->route('dashboard');
+        // Auth against staff provider using username column
+        if (Auth::attempt(['username' => $data['user_id'], 'password' => $data['password']], false)) {
+            $request->session()->regenerate(); // prevent session fixation
+            return redirect()->intended(route('dashboard'));
         }
-        return redirect()->route('welcome')->with('error','Invalid Credentials!');
+
+        return back()->withErrors(['user_id' => 'Invalid credentials.'])->onlyInput('user_id');
     }
-    public function dashboard(){
-        $username = session('username');
-        if ($username === 'receptionist12plk') {
+
+    // GET /dashboard (behind auth middleware)
+    public function dashboard()
+    {
+        $user = Auth::user(); // <- use the guard, not manual session
+        if ($user && $user->username === 'receptionist12plk') {
             return view('customerForm');
-    }
+        }
         return view('loanofficerdashboard');
-
     }
 
-    //function for logging out:
-    public function logout(Request $request){
-       Auth::logout();
-       $request->session()->invalidate(); // Invalidate the session
-       $request->session()->regenerateToken(); // Regenerate CSRF token
-       return redirect()->route('welcome')->with('success','you logged out!'); 
+    // POST /logout
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login')->with('success', 'you logged out!');
     }
 }
 ?>
