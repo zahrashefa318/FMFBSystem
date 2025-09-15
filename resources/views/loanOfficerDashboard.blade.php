@@ -38,8 +38,21 @@
            aria-expanded="false"
            aria-controls="placeholderSection"
           >Pending Customers</a>
-          <a href="#" class="nav-link">Approved Customers</a>
-          <a href="#" class="nav-link">Denied Customers</a>
+          <a href="#placeholderSection" 
+           class="nav-link load-approved"
+           data-url="{{route('onlycustomerlist',['status' => 'approved'],false)}}"
+           data-bs-target="#placeholderSection"
+           role="button"
+           aria-expanded="false"
+           aria-controls="placeholderSection">Approved Customers</a>
+
+          <a href="#placeholderSection" 
+           class="nav-link load-denied"
+           data-url="{{route('onlycustomerlist',['status' => 'denied'],false)}}"
+           data-bs-target="#placeholderSection"
+           role="button"
+           aria-expanded="false"
+           aria-controls="placeholderSection">Denied Customers</a>
           <a href="#" class="nav-link">Paid Off Customers</a>
         </div>
 
@@ -100,6 +113,50 @@ $('.load-new').on('click', function(e){
 });
 //load pending customers--------------------------------------
 $('.load-pending').on('click', function(e){
+  e.preventDefault();
+  var target = $('#placeholderSection');
+  // Collapse it
+  var bsCollapse = bootstrap.Collapse.getOrCreateInstance(target[0]);
+  bsCollapse.hide();
+
+  // Now AJAX load the table
+  $.ajax({
+    url: $(this).data('url'),
+    success: function(html){
+      target.html(html);
+      bsCollapse.show(); // then show once content is ready
+    },
+    error: function(){
+      target.html('<p class="text-danger p‑3">Error loading data</p>');
+      bsCollapse.show();
+    }
+  });
+});
+
+//load approved customers--------------------------------------
+$('.load-approved').on('click', function(e){
+  e.preventDefault();
+  var target = $('#placeholderSection');
+  // Collapse it
+  var bsCollapse = bootstrap.Collapse.getOrCreateInstance(target[0]);
+  bsCollapse.hide();
+
+  // Now AJAX load the table
+  $.ajax({
+    url: $(this).data('url'),
+    success: function(html){
+      target.html(html);
+      bsCollapse.show(); // then show once content is ready
+    },
+    error: function(){
+      target.html('<p class="text-danger p‑3">Error loading data</p>');
+      bsCollapse.show();
+    }
+  });
+});
+
+//load denied customers--------------------------------------
+$('.load-denied').on('click', function(e){
   e.preventDefault();
   var target = $('#placeholderSection');
   // Collapse it

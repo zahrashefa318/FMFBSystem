@@ -17,37 +17,27 @@ use App\Models\Customer;
 
 class LoanOfficerController extends Controller
 {
-    public function LoanOfficerdashboard(LoanOfficerService $dashboard ,$status)
-    {
-        $grouped = $dashboard->getMyCustomersGroupedByStatus();
-        if($status == 'new'){
-                $new_customers = $grouped->get('new') ?? new Collection();
-                return view('onlycustomerlist', ['customer' => $new_customers , 'status' =>'new']);
-            }
-            
-        
-        elseif($status == 'pending'){
-                $pending_customers = $grouped->get('pending') ?? new Collection();
-                return view('onlycustomerlist', ['customer' => $pending_customers , 'status' =>'pending']);
-            }
-        
-        elseif($status =='approved'){
-            if ($grouped->has('approved') ){
-                $approved_customers=$grouped->get('approved');
-                return view('onlycustomerlist', ['customer' => $approved_customers]);
-            }
-        }
-        elseif($status == 'denied'){
-            if ($grouped->has('denied') ){
-                $denied_customers=$grouped->get('denied');
-                return view('onlycustomerlist', ['customer' => $denied_customers]);
-        }
+ public function LoanOfficerdashboard(LoanOfficerService $dashboard, string $status)
+{
+    $status = strtolower(trim($status));
+
+    // valid statuses
+    $valid = ['new','pending','approved','denied'];
+    if (!in_array($status, $valid, true)) {
+        return view('onlycustomerlist', ['customer' => collect(), 'status' => $status]);
     }
-        return redirect()->back()->with('error', 'Invalid Id of staff!');
+
+    $grouped = $dashboard->getMyCustomersGroupedByStatus();
+    return view('onlycustomerlist', [
+        'customer' => $grouped->get($status, collect()), // default: empty collection
+        'status'   => $status,
+    ]);
+}
+
        
 
        
-    }
+    
 
 
     // function for loading  new customers details after clicking the customer list from loan officer dashboard :

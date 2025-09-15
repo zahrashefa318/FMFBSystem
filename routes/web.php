@@ -51,6 +51,7 @@ Route::get('/customerLoanInformation/{id}',[LoanOfficerController::class, 'custo
 
 Route::post('/approvedCustomer/{customerId}',[LoanOfficerController::class, 'approvedCustomer'])->name('approvedCustomer');
 
+
 Route::post('/emailSchedule/{loan:loan_id}',[LoanOfficerController::class, 'emailSchedule'])->name('emailSchedule');
 Route::get('/email-sent', function () {
     return view('emailSent');  // simple view for status

@@ -16,7 +16,7 @@ class LoanOfficerService
      */
     public function getMyCustomersGroupedByStatus(): Collection
     {
-        $username = session('username');
+        $username =  Auth::user()->username;
 
         return Customer::where('staff_username', $username)
             ->select('customer_id', 'first_name', 'last_name', 'status', 'registrationdate')
