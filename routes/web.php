@@ -59,11 +59,17 @@ Route::get('/email-sent', function () {
 
 
 Route::get('/test-email', function () {
-    Mail::to('khadimalimi.999@gmail.com')->send(new TestEmail());
+    Mail::to('zahra.shefa.1990@gmail.com')->send(new TestEmail());
     return 'Email sent (or failed — check logs)!';
 });
 
 Route::delete('/customerdestroy/{id}',[LoanOfficerController::class, 'customerdestroy'])->name('customerdestroy');
+// route for search customer in loan officer dashboard: 
+Route::post('/search_customer_for_loanofficer',[LoanOfficerController::class, 'search_customer_for_loanofficer'])
+            ->name('search_customer_for_loanofficer');
 
+Route::post('/deny/{id}',[LoanOfficerController::class, 'deny'])->name('deny');
+
+Route::get('/DeniedApprovedDetail/{id}', [LoanOfficerController::class, 'DeniedApprovedDetail'])->name('DeniedApprovedDetail');
 });
 ?>

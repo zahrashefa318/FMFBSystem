@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LoanScheduleMailable;
 use App\Models\LoanAccount;   
-use App\Models\Customer;   
+use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;   
 
 
 
@@ -34,6 +35,8 @@ class LoanOfficerController extends Controller
     ]);
 }
 
+
+
        
 
        
@@ -42,8 +45,9 @@ class LoanOfficerController extends Controller
 
     // function for loading  new customers details after clicking the customer list from loan officer dashboard :
         public function customerdetails(LoanOfficerService $dashboard,$id){
+        $showButtons = true;
         $customer=$dashboard->customerdetailsservice($id);
-        return view('customerdetails', compact('customer'));
+        return view('customerdetails', compact('customer', 'showButtons'));
         }
 
 
@@ -92,9 +96,10 @@ class LoanOfficerController extends Controller
                                                 'customerId'=>$id,]);
       }  
 
-    //function for changing customer status from pending to approved then create a loan account for that customer_id and return a pyament schedule view:
+    //function for changing customer status from pending to approved(in loan application service class) then create a loan account for that customer_id and return a pyament schedule view:
         public function approvedCustomer($id , LoanApplicationService $loanAccount){
-            
+
+          try{  
             $loanAcc=$loanAccount-> creatLoanAccount($id);
 
             $loanAccount-> associateLoanIdtoCustomer($loanAcc,$id);
@@ -107,6 +112,10 @@ class LoanOfficerController extends Controller
             'monthlyPayment' => $paymentFixed, // constant monthly figure
             'schedule'       => $schedule,
         ]);
+        }
+        catch(\Illuminate\Validation\ValidationException $e){
+            return back()->withErrors($e->errors())->withInput();
+        }
         }
 
 
@@ -199,6 +208,50 @@ public function customerdestroy($id, LoanOfficerService $customerlist)
         ], 500);
     }
 }
+// function for searching customer in loan officer dashboard:
+        public function search_customer_for_loanofficer(Request $req , MyTableController $search){
+            $showButtons = false;
+            $customer=null;
+            $ssn=$req->input('ssn2');
+            $customerexists=$search->search_ssn($ssn);
+            if ($customerexists){
+                $customer=Customer::where('social_security_num',$ssn)
+                                                ->where('staff_username', Auth::id())
+                                                ->select(['customer_id','first_name','social_security_num','last_name','phone','email','type_of_business','time_in_business','business_phone','staff_username', 'status', 'registrationdate'])
+                                                ->first();
+
+                 return view('customerdetails', compact('customer', 'showButtons'));
+            }
+            return view('customerdetails', [
+                        'customer' => $customer,  // either model or null
+                        'showButtons' => false,    // or true depending
+                        'error' => 'No such customer!'  // optional
+]);
+        }
+
+// function for changing customer status from pending to denied :
+    public function deny($id){
+       $affected = Customer::where('customer_id',$id)
+                 ->where('status', 'pending')
+                 ->update(['status'=>'denied']);
+         return back()->with(
+        $affected ? 'success' : 'error',
+        $affected ? 'Customer has been denied successfully!' : 'No changes made (already denied or approved).'
+         );
+    }
+
+    public function DeniedApprovedDetail($id){
+            $showButtons = false;
+            $customer=null;
+            $customer=Customer::where('customer_id',$id)
+                                                ->where('staff_username', Auth::id())
+                                                ->select(['customer_id','first_name','social_security_num','last_name','phone','email','type_of_business','time_in_business','business_phone','staff_username', 'status', 'registrationdate'])
+                                                ->first();
+
+            return view('customerdetails', compact('customer', 'showButtons'));
+            
+
+    }
 }     
 
  

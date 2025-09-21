@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Loan Form Sections</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+  
   <style>
     body {
       background-color: #fff;
@@ -105,6 +107,20 @@ button.btn-custom {
 .btn-same { min-width: 8rem; }
 
 
+/* -------Style for flash messages-----------------*/
+
+  .simple-alert {
+    position: relative; padding: .75rem 2.5rem .75rem 1rem; border:1px solid transparent;
+    border-radius:.375rem; margin:1rem 0; display:block;
+  }
+  .simple-alert-success { color:#0f5132; background:#d1e7dd; border-color:#badbcc; }
+  .simple-alert-danger  { color:#842029; background:#f8d7da; border-color:#f5c2c7; }
+  .simple-alert .close {
+    position:absolute; top:.5rem; right:.5rem; border:0; background:transparent;
+    width:1rem; height:1rem; line-height:1rem; font-size:1.25rem; cursor:pointer;
+  }
+
+
   </style>
 </head>
 <body>
@@ -112,6 +128,46 @@ button.btn-custom {
     <h1>Loan Application</h1>
   </div>
 
+@if ($errors->has('status'))
+    <div class="standalone-error" role="alert">
+        <span>{{ $errors->first('status') }}</span>
+        <button type="button" class="close-btn" onclick="this.parentElement.remove()" aria-label="Close">
+            &times;
+        </button>
+    </div>
+
+    <style>
+        /* Scoped styling: affects ONLY .standalone-error */
+        .standalone-error {
+            max-width: 500px;
+            margin: 1rem auto;
+            padding: 0.75rem 1rem;
+            background-color: #fff3cd;   /* soft yellow */
+            color: #664d03;             /* dark text */
+            border: 1px solid #ffeeba;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        .standalone-error .close-btn {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: inherit;
+            cursor: pointer;
+            line-height: 1;
+            opacity: 0.6;
+        }
+        .standalone-error .close-btn:hover {
+            opacity: 1;
+        }
+    </style>
+@endif
   <div class="dashboard-wrapper">
   <div class="dashboard-container">
   @foreach ($sections as $title => $labels)
@@ -163,8 +219,11 @@ button.btn-custom {
  </form>
   <a href="#" class="btn btn-custom me-2 btn-same" onclick="event.preventDefault(); document.getElementById('approveForm').submit();">Approve</a>
 
+  <form id="denyForm" action="{{route('deny',$customerId)}}" method="POST" style="display: none;">
+  @csrf
+ </form>
   <a href="#"
-     class="btn btn-custom me-2 btn-same"> Deny </a>
+     class="btn btn-custom me-2 btn-same"onclick="event.preventDefault(); document.getElementById('denyForm').submit();"> Deny </a>
 
   <a href="{{ url()->previous() }}"
      class="btn btn-custom btn-same">Back</a>
@@ -176,6 +235,8 @@ button.btn-custom {
     </div>
   </div>
 
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/js/bootstrap.bundle.min.js"></script>
+  
 </body>
 </html>

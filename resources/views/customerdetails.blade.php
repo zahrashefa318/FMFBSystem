@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf‑8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Customer Details – ID: {{ $customer->id }}</title>
+  <title>Customer Details</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
@@ -103,6 +103,7 @@
 
   <div class="dashboard-wrapper">
     <div class="dashboard-container">
+      @if(!empty($customer))
       <div class="container-header">
         Customer ID: {{ $customer->customer_id }}
       </div>
@@ -138,7 +139,7 @@
               <td class="label">Loan Officer ID:</td>
               <td>{{ $customer->staff_username }}</td>
               <td class="label">Registered On:</td>
-              <td>{{ $customer->created_at->format('F j, Y') }}</td>
+             <td>{{ $customer->registrationdate }}</td>
             </tr>
             <tr>
               <td class="label">Status:</td>
@@ -175,12 +176,21 @@
             @endif
           </tbody>
         </table>
+        
         <div class="divider-left"></div>
       </div>
+      @else
+  <div class="alert alert-warning">
+    {{ $error ?? 'No customer found.' }}
+  </div>
+@endif
+      
 
       <div class="btn-row">
+       @if(!empty($showButtons) && $showButtons)
         <a href="{{url('loanApplicationForm')}}?id={{$customer->customer_id}}" id="pending" name="pending"class="btn btn-theme">{{ $customer->status_button_text ?? 'Under Process' }}</a>
         <button type="button" class="btn btn-theme" onclick="window.print()">Print Detail</button>
+        @endif
         <a href="{{ url()->previous() }}" class="btn btn-theme">Back</a>
       </div>
     </div>

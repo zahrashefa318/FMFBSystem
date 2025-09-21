@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Services\LoanOfficerService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\MyTableController; 
+use Illuminate\Http\Request;
 
 class LoanOfficerController extends Controller
 {
@@ -27,4 +29,5 @@ class LoanOfficerController extends Controller
             ], 500);
         }
     }
+    
 }

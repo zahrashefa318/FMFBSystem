@@ -18,7 +18,7 @@ class LoanApplicationFormController extends Controller
     }
     public function viewLoanApplicationForm(Request $req)
     {  $id=$req->query('id');
-         Customer::where('customer_id',$id)->update(['status'=>'pending']);
+         
         return view('loanApplicationForm',['id'=>$id]);
     }
 
@@ -57,6 +57,8 @@ class LoanApplicationFormController extends Controller
                 ->withInput()
                 ->with('error', 'We encountered an issue submitting your loan application. Please try again or contact support.');
         }
+
+
     }
 
 ?>

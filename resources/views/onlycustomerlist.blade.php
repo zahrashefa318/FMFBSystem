@@ -1,3 +1,4 @@
+
 {{-- resources/views/onlycustomerlist.blade.php --}}
 
 <style>
@@ -69,8 +70,8 @@
                 $routeName = match (strtolower($cust->status)) {
                   'new'      => 'customerdetails',
                   'pending'  => 'customerLoanInformation',
-                  'approved' => 'approvedCustomer',   // Note: this is a POST in your routes; consider a GET detail page instead
-                  'denied'   => 'deniedcustomers',    // ensure this route exists or map to a safe default
+                  'approved' => 'DeniedApprovedDetail',   // Note: this is a POST in your routes; consider a GET detail page instead
+                  'denied'   => 'DeniedApprovedDetail',    // ensure this route exists or map to a safe default
                   default    => 'customerdetails',
                 };
               @endphp
@@ -78,10 +79,10 @@
                   data-url="{{ route($routeName, $cust->customer_id) }}"
                   onmouseover="this.style.cursor='pointer'; this.style.backgroundColor='lightsteelblue';"
                   onmouseout="this.style.backgroundColor='';">
-                <td class="text-center">{{ $cust->customer_id }}</td>
-                <td class="text-center">{{ $cust->first_name }} {{ $cust->last_name }}</td>
-                <td class="text-center">{{ $cust->registrationdate }}</td>
-                <td class="text-center">{{ ucfirst($cust->status) }}</td>
+                <td class="text-center" style="text-align:center">{{ $cust->customer_id }}</td>
+                <td class="text-center"style="text-align:center">{{ $cust->first_name }} {{ $cust->last_name }}</td>
+                <td class="text-center"style="text-align:center">{{ $cust->registrationdate }}</td>
+                <td class="text-center"style="text-align:center">{{ ucfirst($cust->status) }}</td>
               </tr>
             @empty
               <tr>

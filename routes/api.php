@@ -27,3 +27,4 @@ Route::get('/health', function () {
         'version' => app()->version(),
     ], 200);
 })->name('health');
+

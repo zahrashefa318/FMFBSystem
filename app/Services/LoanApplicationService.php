@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class LoanApplicationService
 {
@@ -24,6 +25,7 @@ class LoanApplicationService
 
                 // 1) Load customer (fail if not found)
                 /** @var \App\Models\Customer $customer */
+                Customer::where('customer_id',$data['id'])->update(['status'=>'pending']);
                 $customer = Customer::findOrFail($data['id']);
 
                 // 2) Create business address
@@ -172,8 +174,16 @@ class LoanApplicationService
     }
 
     public function creatLoanAccount($id):LoanAccount
-    {
-        Customer::where('customer_id', $id)->update(['status'=>'approved']);
+    {   
+        $customerstatus=Customer::where('customer_id', $id)->value('status');
+        if($customerstatus === 'approved'){
+            throw ValidationException::withMessages(['status'=>['Already approved !']]);
+        }
+
+
+        Customer::where('customer_id', $id)
+                ->where('status','pending')
+                ->update(['status'=>'approved']);
         return DB::transaction(function() use ($id) {
 
              $loan_app=LoanApplication::where('customer_id',$id)
