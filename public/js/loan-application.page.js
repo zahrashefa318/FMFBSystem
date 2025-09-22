@@ -75,13 +75,25 @@ document.addEventListener('DOMContentLoaded', () => {
     term.reportValidity();
   });
 
+    // Interest rate: 0–100 inclusive, up to 2 decimals (e.g., 7, 7.5, 12.34, 100, 100.00)
   const rate = document.getElementById('interest_rate');
-  on(rate, 'blur', () => {
-    if (!rate || !rate.value) { rate?.setCustomValidity(''); return; }
-    const ok = /^(\d{1,2}(\.\d{1,2})?|100(\.0{1,2})?)$/.test(rate.value);
+
+  function validateRate() {
+    if (!rate) return;
+    const v = rate.value?.trim();
+    if (!v) {
+      // If the field is optional in HTML, empty is OK; if it's required, the browser will handle it.
+      rate.setCustomValidity('');
+      return;
+    }
+    const ok = /^(\d{1,2}(\.\d{1,2})?|100(\.0{1,2})?)$/.test(v);
     rate.setCustomValidity(ok ? '' : 'Rate must be 0–100 with up to 2 decimals (e.g., 7.5).');
-    rate.reportValidity();
-  });
+  }
+
+  // Validate while typing and on leaving the field
+  on(rate, 'input', () => { validateRate(); rate.reportValidity(); });
+  on(rate, 'blur',  () => { validateRate(); rate.reportValidity(); });
+
 
   // === Signature Pads via <canvas> tag selection ===
   const canvases = Array.from(document.getElementsByTagName('canvas'));
@@ -123,6 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
     byClass('phone-field').forEach((el) => {
       if (el.value && !PHONE_RE.test(el.value)) { el.reportValidity(); ok = false; }
     });
+
+    
+    // NEW: ensure interest rate participates in HTML5 constraint validation
+    if (rate && !rate.checkValidity()) { // uses setCustomValidity() result
+      rate.reportValidity();
+      ok = false;
+    }
+    
     if (customerPad && customerPad.isEmpty()) { alert('Please provide the customer signature.'); ok = false; }
     if (guarantorPad && guarantorPad.isEmpty()) { alert('Please provide the guarantor signature.'); ok = false; }
     if (!ok) { e.preventDefault(); return; }

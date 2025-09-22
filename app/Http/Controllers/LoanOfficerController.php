@@ -138,7 +138,7 @@ class LoanOfficerController extends Controller
             ); // Facade + Mailable pattern per docs. :contentReference[oaicite:4]{index=4}
 
             return redirect()
-                ->route('emailSent')
+                ->back()
                 ->with('status', 'Schedule emailed to ' . $cust->email);
                 }
 
@@ -209,24 +209,17 @@ public function customerdestroy($id, LoanOfficerService $customerlist)
     }
 }
 // function for searching customer in loan officer dashboard:
-        public function search_customer_for_loanofficer(Request $req , MyTableController $search){
+        public function search_customer_for_loanofficer(Request $req , MyTableController $search,LoanOfficerService $dashboard1){
             $showButtons = false;
             $customer=null;
             $ssn=$req->input('ssn2');
             $customerexists=$search->search_ssn($ssn);
             if ($customerexists){
-                $customer=Customer::where('social_security_num',$ssn)
-                                                ->where('staff_username', Auth::id())
-                                                ->select(['customer_id','first_name','social_security_num','last_name','phone','email','type_of_business','time_in_business','business_phone','staff_username', 'status', 'registrationdate'])
-                                                ->first();
-
+                $customer=$dashboard1->customerdetailsserviceBySSN($ssn);
                  return view('customerdetails', compact('customer', 'showButtons'));
             }
-            return view('customerdetails', [
-                        'customer' => $customer,  // either model or null
-                        'showButtons' => false,    // or true depending
-                        'error' => 'No such customer!'  // optional
-]);
+            return redirect()->route('dashboard')->with('error', 'No such customer');
+                        
         }
 
 // function for changing customer status from pending to denied :
@@ -234,24 +227,70 @@ public function customerdestroy($id, LoanOfficerService $customerlist)
        $affected = Customer::where('customer_id',$id)
                  ->where('status', 'pending')
                  ->update(['status'=>'denied']);
-         return back()->with(
+         return redirect()->route('dashboard')->with(
         $affected ? 'success' : 'error',
         $affected ? 'Customer has been denied successfully!' : 'No changes made (already denied or approved).'
          );
     }
 
-    public function DeniedApprovedDetail($id){
+    public function DeniedApprovedDetail(LoanOfficerService $dashboard2, $id){
             $showButtons = false;
             $customer=null;
-            $customer=Customer::where('customer_id',$id)
-                                                ->where('staff_username', Auth::id())
-                                                ->select(['customer_id','first_name','social_security_num','last_name','phone','email','type_of_business','time_in_business','business_phone','staff_username', 'status', 'registrationdate'])
-                                                ->first();
-
-            return view('customerdetails', compact('customer', 'showButtons'));
+            $customer=$dashboard2->customerdetailsservice($id);
+                 return view('customerdetails', compact('customer', 'showButtons'));
             
-
     }
+
+    // ------------Function for Editing customer detail-----------
+    public function edit(Request $req, Customer $customer)
+{
+    
+    $data = $req->validate([
+        'first_name' => 'required|string|max:100',
+        'last_name'  => 'required|string|max:100',
+        'phone'      => 'nullable|string|max:30',
+        'email'      => 'nullable|email',
+        'type_of_business' => 'nullable|string|max:120',
+        'time_in_business' => 'nullable|string|max:50',
+        'business_phone'   => 'nullable|string|max:30',
+        'status'     => 'required|string|in:new,pending,approved,denied',
+        'address.street'  => 'nullable|string|max:150',
+        'address.city'    => 'nullable|string|max:80',
+        'address.state'   => 'nullable|string|max:30',
+        'address.zipcode' => 'nullable|string|max:20',
+    ]);  // request validation, standard Laravel. 
+
+    // Track customer changes
+    $customer->fill($data); // do not save yet
+    $customerChanged = $customer->isDirty(); // true if any filled attribute differs. 
+
+    // Track address changes (if you allow editing it here)
+    $addressChanged = false;
+    if (array_key_exists('address', $data)) {
+        // Clone current or make a temp instance to compare
+        $addr = $customer->address ?: new Address();
+        $addr->fill($data['address'] ?? []);
+        $addressChanged = $addr->isDirty(); // true if edited. 
+    }
+
+    if (! $customerChanged && ! $addressChanged) {
+        // Nothing changed: flash + back to same page
+        return back()->with('warning', 'Nothing changed.')->withInput(); // flash message. 
+    }
+
+    // Persist actual changes
+    $customer->save(); // only runs UPDATE if dirty.
+
+    if ($addressChanged) {
+        $customer->address()->updateOrCreate(
+            ['address_id' => optional($customer->address)->address_id],
+            $data['address']
+        ); // upsert address cleanly. 
+    }
+
+    return back()->with('success', 'Customer updated successfully.');
+}
+
 }     
 
  

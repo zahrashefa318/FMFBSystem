@@ -59,7 +59,7 @@
           <thead class="table-light">
             <tr>
               <th class="text-center" style="width:120px;">ID</th>
-              <th class="text-center" style="width:120px;">Name</th>
+              <th class="text-center" style="width:120px;"> Full Name</th>
               <th class="text-center" style="width:120px;">Registered Date</th>
               <th class="text-center" style="width:120px;">Status</th>
             </tr>

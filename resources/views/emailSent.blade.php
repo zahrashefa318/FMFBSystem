@@ -16,6 +16,8 @@
         No status available.
       </div>
     @endif
+     {{-- Back button --}}
+  <a href="{{route('dashboard')}}" class="btn btn-sm btn-secondary btn-custom-purple">Back</a>
   </div>
 </body>
 </html>

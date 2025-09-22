@@ -41,7 +41,14 @@ class LoanOfficerService
     {
     return Customer::with(['address','branch.address'])->findOrFail($id);
     }
-
+//---------Function for customer details searched by ssn ----------
+    public function customerdetailsserviceBySSN($ssn)
+    {
+    return Customer::with(['address','branch.address'])
+                    ->where('social_security_num',$ssn)
+                    ->where('staff_username', Auth::id())
+                    ->first();
+    }
 
     //function for deleting customers from customer list in loan officer dashboard:
     public function deleteCustomer($id){

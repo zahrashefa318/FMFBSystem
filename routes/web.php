@@ -49,7 +49,7 @@ Route::get('/loanApplicationForm', [LoanApplicationFormController::class, 'viewL
 Route::post('/submitForm',[LoanApplicationFormController::class,'submitForm'])->name('submitForm');  
 Route::get('/customerLoanInformation/{id}',[LoanOfficerController::class, 'customerLoanInformation'])->name('customerLoanInformation');
 
-Route::post('/approvedCustomer/{customerId}',[LoanOfficerController::class, 'approvedCustomer'])->name('approvedCustomer');
+Route::match(['get','post'],'/approvedCustomer/{customerId}',[LoanOfficerController::class, 'approvedCustomer'])->name('approvedCustomer');
 
 
 Route::post('/emailSchedule/{loan:loan_id}',[LoanOfficerController::class, 'emailSchedule'])->name('emailSchedule');
@@ -65,11 +65,13 @@ Route::get('/test-email', function () {
 
 Route::delete('/customerdestroy/{id}',[LoanOfficerController::class, 'customerdestroy'])->name('customerdestroy');
 // route for search customer in loan officer dashboard: 
-Route::post('/search_customer_for_loanofficer',[LoanOfficerController::class, 'search_customer_for_loanofficer'])
+Route::match(['get','post'],'/search_customer_for_loanofficer',[LoanOfficerController::class, 'search_customer_for_loanofficer'])
             ->name('search_customer_for_loanofficer');
 
 Route::post('/deny/{id}',[LoanOfficerController::class, 'deny'])->name('deny');
 
 Route::get('/DeniedApprovedDetail/{id}', [LoanOfficerController::class, 'DeniedApprovedDetail'])->name('DeniedApprovedDetail');
+Route::patch('/customers/{customer}', [LoanOfficerController::class, 'edit'])
+     ->name('customers.update');
 });
 ?>

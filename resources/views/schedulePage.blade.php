@@ -37,6 +37,21 @@
 
     /* Right-align currency cells */
     .text-money { text-align: right; }
+
+    /* -----------style for back and customer (emailing) buttons-------*/
+    .btn-custom-purple {
+  background-color: #341539; 
+  color: #ffffff;
+  border: 1px solid #341539;
+}
+
+/* Hover & focus state to lighten or darken a bit for feedback */
+.btn-custom-purple:hover,
+.btn-custom-purple:focus {
+  background-color: #5C068C; /* slightly lighter or darker purple */
+  border-color: #5C068C;
+  color: #ffffff;
+}
   </style>
 </head>
 <body>
@@ -67,15 +82,18 @@
     </div>
 @endif
 
-
+    <div class="d-flex gap-2 align-items-center">
+      {{-- Back button --}}
+  <a href="{{route('dashboard')}}" class="btn btn-sm btn-secondary btn-custom-purple">Back</a>
       {{-- Email schedule to approved customer --}}
       <form method="POST" action="{{ route('emailSchedule', $loanAcc->loan_id) }}" class="d-flex gap-2">
         @csrf
         <span class="align-self-center small text-muted d-none d-sm-inline">
           Email to: <strong>{{ $customerEmail ?? '—' }}</strong>
         </span>
-        <button type="submit" class="btn btn-sm btn-primary">Customer</button>
+        <button type="submit" class="btn btn-sm btn-primary btn-custom-purple">Customer</button>
       </form>
+  </div>
     </div>
 
     <div class="text-muted small mb-3">

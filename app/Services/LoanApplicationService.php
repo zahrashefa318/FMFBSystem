@@ -184,6 +184,7 @@ class LoanApplicationService
         Customer::where('customer_id', $id)
                 ->where('status','pending')
                 ->update(['status'=>'approved']);
+                
         return DB::transaction(function() use ($id) {
 
              $loan_app=LoanApplication::where('customer_id',$id)

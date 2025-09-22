@@ -8,6 +8,54 @@
   <title>Loan Officer Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css">
+<style>
+  .my-alert {
+    position: relative;
+    padding: 15px 20px;
+    border: 1px solid;
+    border-radius: 4px;
+    margin: 20px 0;
+    font-family: sans-serif;
+  }
+
+  .my-alert-error {
+    border-color: #f5c2c7;
+    background-color: #f8d7da;
+    color: #842029;
+  }
+
+  .my-alert-success {
+    border-color: #badbcc;
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  .my-alert-icon {
+    margin-right: 10px;
+    font-size: 1.2em;
+    vertical-align: middle;
+  }
+
+  .my-alert-message {
+    vertical-align: middle;
+  }
+
+  .my-alert-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.2em;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .my-alert-close:hover {
+    opacity: 0.7;
+  }
+</style>
+
   </head>
 <body>
   <!-- Header Section -->
@@ -80,12 +128,22 @@
 
       <div class="main">
         <div class="main-title">Customers
-          @if (session('error'))
-    <div class="alert alert-danger" role="alert">
-        {{ session('error') }}
-    </div>
-          @endif  
-        </div>
+        @if (session('error'))
+  <div class="my-alert my-alert-error">
+    <span class="my-alert-icon">&#9888;</span>
+    <span class="my-alert-message">{{ session('error') }}</span>
+    <button type="button" class="my-alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+  </div>
+@endif
+
+@if (session('success'))
+  <div class="my-alert my-alert-success">
+    <span class="my-alert-icon">&#10003;</span>  {{-- checkmark or some success icon --}}
+    <span class="my-alert-message">{{ session('success') }}</span>
+    <button type="button" class="my-alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+  </div>
+@endif
+  </div>
         <div id="placeholderSection" class="collapse">
           <div class="placeholder p-3">Customers</div>
         </div>

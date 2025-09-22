@@ -166,6 +166,13 @@ button.btn-custom {
         .standalone-error .close-btn:hover {
             opacity: 1;
         }
+
+        .btn-same.active {
+  /* Adjust these styles as you like */
+  background-color: #0056b3;
+  color: white;
+  /* maybe change border, shadow, etc. */
+}
     </style>
 @endif
   <div class="dashboard-wrapper">
@@ -210,22 +217,36 @@ button.btn-custom {
   </table>
 @endforeach
   <!-- Buttons Anchored at Bottom and Centered -->
-      <div class="mt-auto text-center" style="margin:0 auto;">
-        @php
-          $customerId=$customerId;
-        @endphp
-  <form id="approveForm" action="{{route('approvedCustomer',$customerId)}}" method="POST" style="display: none;">
-  @csrf
- </form>
-  <a href="#" class="btn btn-custom me-2 btn-same" onclick="event.preventDefault(); document.getElementById('approveForm').submit();">Approve</a>
+     <div class="mt-auto text-center" style="margin:0 auto;">
+  @php
+    $customerId = $customerId;
+  @endphp
 
-  <form id="denyForm" action="{{route('deny',$customerId)}}" method="POST" style="display: none;">
-  @csrf
- </form>
-  <a href="#"
-     class="btn btn-custom me-2 btn-same"onclick="event.preventDefault(); document.getElementById('denyForm').submit();"> Deny </a>
+  <form id="approveForm" action="{{ route('approvedCustomer', $customerId) }}" method="POST" style="display: none;">
+    @csrf
+  </form>
+  <a 
+    href="#" 
+    id="approveBtn"
+    class="btn btn-custom me-2 btn-same"
+    onclick="handleAction('approve', event)">
+    Approve
+  </a>
 
-  <a href="{{ url()->previous() }}"
+  <form id="denyForm" action="{{ route('deny', $customerId) }}" method="POST" style="display: none;">
+    @csrf
+  </form>
+  <a 
+    href="#" 
+    id="denyBtn"
+    class="btn btn-custom btn-same"
+    onclick="handleAction('deny', event)">
+    Deny
+  </a>
+</div>
+
+
+  <a href="{{route('dashboard')}}"
      class="btn btn-custom btn-same">Back</a>
 </div>
 </div>
@@ -234,6 +255,49 @@ button.btn-custom {
       
     </div>
   </div>
+
+<script>
+  let actionTaken = false;
+
+  function handleAction(type, event) {
+    event.preventDefault();
+
+    // If already clicked one, do nothing
+    if (actionTaken) {
+      return;
+    }
+    actionTaken = true;
+
+    const approveBtn = document.getElementById('approveBtn');
+    const denyBtn = document.getElementById('denyBtn');
+
+    // Disable both so no more clicks are possible
+    disableLink(approveBtn);
+    disableLink(denyBtn);
+
+    if (type === 'approve') {
+      // maybe set active class style
+      approveBtn.classList.add('active');
+      // submit the form
+      document.getElementById('approveForm').submit();
+    } else if (type === 'deny') {
+      denyBtn.classList.add('active');
+      document.getElementById('denyForm').submit();
+    }
+  }
+
+  function disableLink(linkEl) {
+    // remove click handler
+    linkEl.onclick = function(e) {
+      e.preventDefault();
+    };
+    // optionally style it as disabled
+    linkEl.style.pointerEvents = 'none';
+    linkEl.style.opacity = '0.6';
+    linkEl.style.cursor = 'default';
+  }
+</script>
+
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/js/bootstrap.bundle.min.js"></script>
