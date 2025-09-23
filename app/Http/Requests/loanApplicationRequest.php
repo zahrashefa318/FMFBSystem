@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class loanApplicationRequest extends FormRequest
 {
@@ -57,16 +58,16 @@ class loanApplicationRequest extends FormRequest
             'address_street'          => ['required', 'string', 'max:255'],
             'address_city'            => ['required', 'string', 'max:100'],
             'address_state'           => ['required', 'string', 'size:2'],
-            'address_zipcode'         => ['required', 'regex:/^\d{5}(-\d{4})?$/'],
+            'address_zipcode'         => ['required','digits:5'],
 
             'phone'                   => ['required', 'regex:/^\(\d{3}\)\s?\d{3}-\d{4}$/'],
             'email'                   => ['nullable', 'email', 'max:255'],
 
-            'loan_amount'             => ['required', 'numeric', 'min:1'],
+            'loan_amount'             => ['required','integer','min:1','max:10000000'],
             'loan_purpose'            => ['required', 'string', 'in:Equipment,Marketing,WorkingCapital,CapacityExpansion,Other'],
-            'repayment_term_months'   => ['required', 'integer', 'min:1'],
+            'repayment_term_months'   => ['required','integer','between:1,360'],
             'repayment_frequency'     => ['required', 'string', 'in:Monthly,Quarterly,Annually'],
-            'interest_rate'           => ['nullable', 'numeric', 'min:0'],
+            'interest_rate'           => ['nullable','numeric','between:0,9.9999', 'decimal:0,4', ],
 
             'guarantor_name'          => ['required', 'string', 'max:255'],
             'guarantor_relationship'  => ['required', 'string', 'max:255'],

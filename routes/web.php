@@ -49,7 +49,7 @@ Route::get('/loanApplicationForm', [LoanApplicationFormController::class, 'viewL
 Route::post('/submitForm',[LoanApplicationFormController::class,'submitForm'])->name('submitForm');  
 Route::get('/customerLoanInformation/{id}',[LoanOfficerController::class, 'customerLoanInformation'])->name('customerLoanInformation');
 
-Route::match(['get','post'],'/approvedCustomer/{customerId}',[LoanOfficerController::class, 'approvedCustomer'])->name('approvedCustomer');
+Route::post('/approvedCustomer/{customerId}',[LoanOfficerController::class, 'approvedCustomer'])->name('approvedCustomer');
 
 
 Route::post('/emailSchedule/{loan:loan_id}',[LoanOfficerController::class, 'emailSchedule'])->name('emailSchedule');

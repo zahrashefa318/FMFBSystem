@@ -164,7 +164,7 @@
       </div>
       <div class="grid-item">
         <label for="address_zipcode">Zip Code *</label>
-        <input type="text" id="address_zipcode" name="address_zipcode" class="zip-field" inputmode="numeric" required>
+        <input type="text" id="address_zipcode" name="address_zipcode" class="zip-field" inputmode="numeric" pattern="\d{5}" maxlength="5" required>
       </div>
       <div class="grid-item">
         <label for="phone">Phone Number *</label>
@@ -176,7 +176,7 @@
       </div>
       <div class="grid-item">
         <label for="loan_amount">Loan Amount *</label>
-        <input type="number" id="loan_amount" name="loan_amount" required>
+        <input type="number" id="loan_amount" name="loan_amount" inputmode="numeric" pattern="\d+" required>
       </div>
       <div class="grid-item">
         <label for="loan_purpose">Purpose *</label>
@@ -191,7 +191,7 @@
       </div>
       <div class="grid-item">
         <label for="repayment_term_months">Term (months) *</label>
-        <input type="number" id="repayment_term_months" name="repayment_term_months" required>
+        <input type="number" id="repayment_term_months" name="repayment_term_months" inputmode="number" required>
       </div>
       <div class="grid-item">
         <label for="repayment_frequency">Frequency *</label>
@@ -203,7 +203,8 @@
       </div>
       <div class="grid-item">
         <label for="interest_rate">Interest Rate (%)</label>
-        <input type="number" id="interest_rate" name="interest_rate">
+        <input type="number" id="interest_rate" name="interest_rate" min="0" max="9.9999" step="0.5" inputmode="decimal"/>
+                
       </div>
     </div>
 

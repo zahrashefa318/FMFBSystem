@@ -1,6 +1,4 @@
-// Keep signatures crisp and validations active.
-// Uses class-based selectors, and selects canvases via tag name.
-
+// validators.js
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   if (!form) return;
@@ -51,6 +49,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const ZIP_RE = /^\d{5}$/;
   byClass('zip-field').forEach((el) => {
     on(el, 'keypress', (e) => { if (!/[0-9]/.test(e.key)) e.preventDefault(); });
+    on(el, 'paste', (e) => {
+      const t = (e.clipboardData || window.clipboardData).getData('text');
+      if (!/^\d+$/.test(t)) e.preventDefault();
+    });
+    on(el, 'input', () => {
+      const cleaned = el.value.replace(/\D+/g, '').slice(0, 5);
+      if (cleaned !== el.value) el.value = cleaned;
+    });
     on(el, 'blur', () => {
       if (el.value && !ZIP_RE.test(el.value)) el.setCustomValidity('Please enter exactly 5 digits (leading zeros allowed)');
       else el.setCustomValidity('');
@@ -58,44 +64,101 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Numeric ranges
+  // Loan amount: digits only + existing range check
   const loanAmt = document.getElementById('loan_amount');
-  on(loanAmt, 'blur', () => {
-    const n = Number(loanAmt.value);
-    if (loanAmt.value && !(n > 0 && n <= 10000000)) loanAmt.setCustomValidity('Enter a positive amount (≤ 10,000,000).');
-    else loanAmt.setCustomValidity('');
-    loanAmt.reportValidity();
-  });
-
-  const term = document.getElementById('repayment_term_months');
-  on(term, 'blur', () => {
-    const n = parseInt(term.value, 10);
-    if (term.value && (!Number.isInteger(n) || n < 1 || n > 360)) term.setCustomValidity('Enter an integer number of months (1–360).');
-    else term.setCustomValidity('');
-    term.reportValidity();
-  });
-
-    // Interest rate: 0–100 inclusive, up to 2 decimals (e.g., 7, 7.5, 12.34, 100, 100.00)
-  const rate = document.getElementById('interest_rate');
-
-  function validateRate() {
-    if (!rate) return;
-    const v = rate.value?.trim();
-    if (!v) {
-      // If the field is optional in HTML, empty is OK; if it's required, the browser will handle it.
-      rate.setCustomValidity('');
-      return;
-    }
-    const ok = /^(\d{1,2}(\.\d{1,2})?|100(\.0{1,2})?)$/.test(v);
-    rate.setCustomValidity(ok ? '' : 'Rate must be 0–100 with up to 2 decimals (e.g., 7.5).');
+  if (loanAmt) {
+    on(loanAmt, 'keypress', (e) => {
+      const ch = String.fromCharCode(e.which || e.keyCode);
+      const isCtrl = e.which === 0 || e.keyCode < 32;
+      if (!/[0-9]/.test(ch) && !isCtrl) e.preventDefault();
+    });
+    on(loanAmt, 'paste', (e) => {
+      const t = (e.clipboardData || window.clipboardData).getData('text');
+      if (!/^\d+$/.test(t)) e.preventDefault();
+    });
+    on(loanAmt, 'input', () => {
+      const cleaned = loanAmt.value.replace(/\D+/g, '');
+      if (cleaned !== loanAmt.value) loanAmt.value = cleaned;
+    });
+    on(loanAmt, 'blur', () => {
+      const n = Number(loanAmt.value);
+      if (loanAmt.value && !(n > 0 && n <= 10000000)) loanAmt.setCustomValidity('Enter a positive amount (≤ 10,000,000).');
+      else loanAmt.setCustomValidity('');
+      loanAmt.reportValidity();
+    });
   }
 
-  // Validate while typing and on leaving the field
-  on(rate, 'input', () => { validateRate(); rate.reportValidity(); });
-  on(rate, 'blur',  () => { validateRate(); rate.reportValidity(); });
+  // Term (months) digits only
+  const term = document.getElementById('repayment_term_months');
+  if (term) {
+    on(term, 'keypress', (e) => {
+      const ch = String.fromCharCode(e.which || e.keyCode);
+      const isCtrl = e.which === 0 || e.keyCode < 32;
+      if (!/[0-9]/.test(ch) && !isCtrl) e.preventDefault();
+    });
+    on(term, 'paste', (e) => {
+      const t = (e.clipboardData || window.clipboardData).getData('text');
+      if (!/^\d+$/.test(t)) e.preventDefault();
+    });
+    on(term, 'input', () => {
+      const cleaned = term.value.replace(/\D+/g, '');
+      if (cleaned !== term.value) term.value = cleaned;
+    });
+    on(term, 'blur', () => {
+      const n = parseInt(term.value, 10);
+      if (term.value && (!Number.isInteger(n) || n < 1 || n > 360)) term.setCustomValidity('Enter an integer number of months (1–360).');
+      else term.setCustomValidity('');
+      term.reportValidity();
+    });
+  }
 
+  // Interest rate
+  const rate = document.getElementById('interest_rate');
+  if (rate) {
+    on(rate, 'beforeinput', (e) => {
+      const data = e.data;
+      const isDelete = /^delete/i.test(e.inputType);
+      if (isDelete || !data) return;
+      const start = rate.selectionStart ?? rate.value.length;
+      const end = rate.selectionEnd ?? rate.value.length;
+      const insert = data === ',' ? '.' : data;
+      const next = rate.value.slice(0, start) + insert + rate.value.slice(end);
+      if (!/^\d{0,1}(\.\d{0,4})?$/.test(next)) e.preventDefault();
+    });
+    on(rate, 'paste', (e) => {
+      let t = (e.clipboardData || window.clipboardData).getData('text');
+      t = t.replace(',', '.');
+      if (!/^\d{0,1}(\.\d{0,4})?$/.test(t)) e.preventDefault();
+    });
+    on(rate, 'keypress', (e) => {
+      const ch = String.fromCharCode(e.which || e.keyCode);
+      const isCtrl = e.which === 0 || e.keyCode < 32;
+      const ok = /[0-9]/.test(ch) || ((ch === '.' || ch === ',') && !rate.value.includes('.'));
+      if (!ok && !isCtrl) e.preventDefault();
+    });
+    on(rate, 'input', () => {
+      rate.value = rate.value.replace(',', '.').trim();
+      const v = rate.value;
+      if (!v) { rate.setCustomValidity(''); return; }
+      const decOk = /^\d(?:\.\d{1,4})?$/.test(v);
+      const num = Number(v);
+      const inRange = num >= 0 && num <= 9.9999;
+      rate.setCustomValidity(decOk && inRange ? '' : 'Enter a rate between 0.0000 and 9.9999 (up to 4 decimals).');
+      rate.reportValidity();
+    });
+    on(rate, 'blur', () => {
+      rate.value = rate.value.replace(',', '.').trim();
+      const v = rate.value;
+      if (!v) { rate.setCustomValidity(''); return; }
+      const decOk = /^\d(?:\.\d{1,4})?$/.test(v);
+      const num = Number(v);
+      const inRange = num >= 0 && num <= 9.9999;
+      rate.setCustomValidity(decOk && inRange ? '' : 'Enter a rate between 0.0000 and 9.9999 (up to 4 decimals).');
+      rate.reportValidity();
+    });
+  }
 
-  // === Signature Pads via <canvas> tag selection ===
+  // Signature Pads
   const canvases = Array.from(document.getElementsByTagName('canvas'));
   let customerPad = null, guarantorPad = null;
 
@@ -107,11 +170,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // DPI-aware resize (per signature_pad guidance)
   function resizePad(canvas, pad) {
     if (!canvas || !pad) return;
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
-    canvas.width  = canvas.offsetWidth  * ratio;
+    canvas.width = canvas.offsetWidth * ratio;
     canvas.height = canvas.offsetHeight * ratio;
     canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
     pad.clear();
@@ -125,32 +187,51 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', resizeAll);
   resizeAll();
 
-  // Clear buttons
-  on(document.getElementById('clear-signature-customer'),  'click', () => customerPad?.clear());
+  on(document.getElementById('clear-signature-customer'), 'click', () => customerPad?.clear());
   on(document.getElementById('clear-signature-guarantor'), 'click', () => guarantorPad?.clear());
 
   // Final submit gate
   on(form, 'submit', (e) => {
     let ok = true;
+
     byClass('phone-field').forEach((el) => {
       if (el.value && !PHONE_RE.test(el.value)) { el.reportValidity(); ok = false; }
     });
 
-    
-    // NEW: ensure interest rate participates in HTML5 constraint validation
-    if (rate && !rate.checkValidity()) { // uses setCustomValidity() result
-      rate.reportValidity();
-      ok = false;
+    if (rate) {
+      // trigger validation
+      rate.dispatchEvent(new Event('input', { bubbles: true }));
+      if (!rate.checkValidity()) { rate.reportValidity(); ok = false; }
     }
-    
+
+    if (loanAmt) {
+      if (!/^\d+$/.test(loanAmt.value)) {
+        loanAmt.setCustomValidity('Please enter a valid whole number amount.');
+        loanAmt.reportValidity();
+        ok = false;
+      } else {
+        loanAmt.setCustomValidity('');
+      }
+    }
+
+    if (term) {
+      if (!/^\d+$/.test(term.value)) {
+        term.setCustomValidity('Please enter a valid whole number of months.');
+        term.reportValidity();
+        ok = false;
+      } else {
+        term.setCustomValidity('');
+      }
+    }
+
     if (customerPad && customerPad.isEmpty()) { alert('Please provide the customer signature.'); ok = false; }
     if (guarantorPad && guarantorPad.isEmpty()) { alert('Please provide the guarantor signature.'); ok = false; }
+
     if (!ok) { e.preventDefault(); return; }
 
-    // Put signature images into hidden inputs
     const custHidden = document.getElementById('customer_signature');
     const guarHidden = document.getElementById('guarantor_signature');
-    if (custHidden && customerPad)  custHidden.value  = customerPad.toDataURL();
+    if (custHidden && customerPad) custHidden.value = customerPad.toDataURL();
     if (guarHidden && guarantorPad) guarHidden.value = guarantorPad.toDataURL();
   });
 });

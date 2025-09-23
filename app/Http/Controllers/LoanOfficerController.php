@@ -114,8 +114,9 @@ class LoanOfficerController extends Controller
         ]);
         }
         catch(\Illuminate\Validation\ValidationException $e){
-            return back()->withErrors($e->errors())->withInput();
+            return redirect()->route('dashboard')->withErrors($e->errors())->withInput();
         }
+
         }
 
 
@@ -138,8 +139,8 @@ class LoanOfficerController extends Controller
             ); // Facade + Mailable pattern per docs. :contentReference[oaicite:4]{index=4}
 
             return redirect()
-                ->back()
-                ->with('status', 'Schedule emailed to ' . $cust->email);
+                ->route('dashboard')
+                ->with('success', 'Schedule emailed to ' . $cust->email);
                 }
 
         /** DRY helper to build amortization schedule and return [schedule, paymentFixed] */

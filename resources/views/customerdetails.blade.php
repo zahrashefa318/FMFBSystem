@@ -403,15 +403,24 @@ table.data-table textarea {
   }
 
   function enterEdit() {
-    // 1) enable the fieldset
-    fieldset.disabled = false; // MDN: disabled fieldset blocks editing/submit. :contentReference[oaicite:1]{index=1}
-    // 2) remove readonly/disabled on each control and switch out of plaintext look
-    controls.forEach(el => {
-      el.readOnly = false;             // MDN: readOnly prevents editing. :contentReference[oaicite:2]{index=2}
-      el.removeAttribute('readonly');
-      el.disabled = false;
-      el.classList.remove('form-control-plaintext'); // Bootstrap readonly-display utility. :contentReference[oaicite:3]{index=3}
-    });
+  fieldset.disabled = false;
+  controls.forEach(el => {
+    // skip the status field so it's never editable
+    if (el.name === 'status') {
+      // ensure it stays readonly / plaintext style
+      el.readOnly = true;
+      el.setAttribute('readonly', 'readonly');
+      el.disabled = false;  // or true if you want disable it fully
+      // maybe keep form-control-plaintext class
+      el.classList.add('form-control-plaintext');
+      return;
+    }
+    // otherwise make editable
+    el.readOnly = false;
+    el.removeAttribute('readonly');
+    el.disabled = false;
+    el.classList.remove('form-control-plaintext');
+  });
     // 3) buttons
     editBtn.classList.add('d-none');
     saveBtn.classList.remove('d-none');
